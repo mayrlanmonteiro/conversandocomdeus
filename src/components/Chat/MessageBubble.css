@@ -1,0 +1,182 @@
+.message-wrapper {
+    display: flex;
+    padding: 16px 20px;
+    width: 100%;
+    animation: fadeInMessage 0.3s ease-out;
+}
+
+.message-wrapper.user {
+    justify-content: flex-end;
+}
+
+.message-container {
+    max-width: 85%;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.message-wrapper.user .message-container {
+    flex-direction: row-reverse;
+}
+
+/* Identitity / Avatar (Minimalist Light) */
+.message-avatar-group {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.assistant .message-avatar-group {
+    background: var(--bg-light-alt);
+    border: 1px solid var(--border-light);
+    color: var(--accent-blue-strong);
+}
+
+.user .message-avatar-group {
+    background: var(--accent-blue-strong);
+    color: var(--bg-white);
+}
+
+/* Bubble Styling (Google Style) */
+.message-bubble-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.message-wrapper.user .message-bubble-body {
+    align-items: flex-end;
+}
+
+.sender-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+    color: var(--text-gray);
+    opacity: 0.8;
+}
+
+.bubble-content {
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 1rem;
+    line-height: 1.6;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.assistant .bubble-content {
+    background: var(--accent-gray-soft);
+    color: var(--text-dark-soft);
+    border: 1px solid var(--border-light);
+    border-left: 4px solid var(--accent-gold-soft);
+    border-top-left-radius: 4px;
+}
+
+.user .bubble-content {
+    background: var(--accent-blue-soft);
+    color: var(--text-dark-soft);
+    border: 1px solid rgba(37, 99, 235, 0.1);
+    border-top-right-radius: 4px;
+}
+
+/* Markdown Details */
+.message-text p {
+    margin-bottom: 12px;
+}
+
+.message-text p:last-child {
+    margin-bottom: 0;
+}
+
+.message-text strong {
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+/* Actions (Hover) */
+.bubble-actions {
+    margin-top: 6px;
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.message-wrapper:hover .bubble-actions {
+    opacity: 1;
+}
+
+.btn-copy-bubble {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    color: var(--text-gray);
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 99px;
+    transition: all 0.2s;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-copy-bubble:hover {
+    color: var(--accent-blue-strong);
+    border-color: var(--accent-blue-strong);
+}
+
+@keyframes fadeInMessage {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Streaming Effect */
+.streaming-tick {
+    display: inline-block;
+    width: 2px;
+    height: 1.1em;
+    background: var(--accent-blue-strong);
+    margin-left: 4px;
+    vertical-align: middle;
+    animation: blinkCursor 0.8s infinite;
+}
+
+@keyframes blinkCursor {
+
+    0%,
+    100% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 640px) {
+    .message-container {
+        max-width: 90%;
+    }
+
+    .bubble-content {
+        padding: 12px 16px;
+        font-size: 0.95rem;
+    }
+}

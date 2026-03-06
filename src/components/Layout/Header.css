@@ -1,0 +1,112 @@
+.header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(2, 8, 23, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.header.is-light {
+    background: rgba(255, 255, 255, 0.8);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.header.is-light .logo-title {
+    color: var(--text-dark);
+}
+
+.header.is-light .logo-tagline {
+    color: var(--text-gray);
+}
+
+.header.is-light .btn-secondary {
+    background: var(--bg-light);
+    color: var(--text-dark);
+    border-color: var(--border-light);
+}
+
+.header.is-light .btn-secondary:hover {
+    background: var(--accent-blue-soft);
+    border-color: var(--accent-blue-strong);
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-height);
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.header-logo:hover {
+    transform: scale(1.02);
+}
+
+.logo-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-title {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+}
+
+.logo-tagline {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
+.header-nav {
+    display: flex;
+    align-items: center;
+}
+
+.btn-glow {
+    position: relative;
+    box-shadow: 0 0 15px rgba(244, 211, 106, 0.2);
+}
+
+.btn-glow::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: linear-gradient(45deg, var(--primary-gold), transparent, var(--primary-gold));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.btn-glow:hover::after {
+    opacity: 0.2;
+}
+
+@media (max-width: 640px) {
+    .visually-hidden-mobile {
+        display: none;
+    }
+
+    .logo-title {
+        font-size: 1.1rem;
+    }
+}
