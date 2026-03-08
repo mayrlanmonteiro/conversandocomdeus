@@ -81,6 +81,23 @@
     align-items: center;
 }
 
+.user-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-email {
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    font-weight: 500;
+}
+
+.nav-guest {
+    display: flex;
+    align-items: center;
+}
+
 .btn-glow {
     position: relative;
     box-shadow: 0 0 15px rgba(244, 211, 106, 0.2);
