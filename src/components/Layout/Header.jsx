@@ -40,7 +40,12 @@ export default function Header() {
                 <nav className="header-nav" aria-label="Navegação principal">
                     {user ? (
                         <div className="user-nav">
-                            <span className="user-email visually-hidden-mobile">{user.email}</span>
+                            <Link to="/profile" className="user-profile-link" title="Ver Perfil">
+                                <span className="user-email visually-hidden-mobile">{user.email}</span>
+                                <div className="user-avatar-mini">
+                                    {user.user_metadata?.full_name?.charAt(0) || user.email.charAt(0)}
+                                </div>
+                            </Link>
                             <button onClick={handleLogout} className="btn btn-secondary btn-sm" title="Sair">
                                 <LogOut size={16} />
                                 <span className="visually-hidden-mobile">Sair</span>

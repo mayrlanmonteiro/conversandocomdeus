@@ -98,6 +98,34 @@
     align-items: center;
 }
 
+.user-profile-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: 50px;
+    transition: all 0.2s ease;
+}
+
+.user-profile-link:hover {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.user-avatar-mini {
+    width: 32px;
+    height: 32px;
+    background: var(--accent-blue-strong);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
 .btn-glow {
     position: relative;
     box-shadow: 0 0 15px rgba(244, 211, 106, 0.2);
