@@ -1,7 +1,6 @@
 .suggestions-section {
-    padding: 4px 0;
+    padding: 8px 0;
     width: 100%;
-    overflow: hidden;
 }
 
 .suggestions-section.footer-mode {
@@ -24,16 +23,29 @@
 .suggestions-grid {
     display: flex;
     flex-wrap: nowrap;
-    gap: 8px;
-    justify-content: center;
-    padding: 4px 8px;
+    gap: 12px;
+    justify-content: flex-start;
+    /* Melhor para scroll horizontal */
+    padding: 20px 24px;
+    margin-top: -8px;
+    /* Compensar padding extra */
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
     scrollbar-width: none;
+    /* Firefox */
+}
+
+/* Centralização quando não há overflow */
+@media (min-width: 800px) {
+    .suggestions-grid {
+        justify-content: center;
+    }
 }
 
 .suggestions-grid::-webkit-scrollbar {
     display: none;
+    /* Chrome/Safari */
 }
 
 .suggestion-chip {
