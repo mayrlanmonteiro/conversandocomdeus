@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import MessageBubble from '../components/Chat/MessageBubble';
 import MessageInput from '../components/Chat/MessageInput';
 import LoadingDots from '../components/ui/LoadingDots';
 import SuggestionChips from '../components/Chat/SuggestionChips';
 import Header from '../components/Layout/Header';
 import { sendMessageStream } from '../services/ai';
+import { supabase } from '../lib/supabase';
 import { ShieldCheck, RefreshCw, Sparkles, AlertCircle } from 'lucide-react';
 import './Chat.css';
 
@@ -15,12 +17,64 @@ const Chat = () => {
     const [streamingContent, setStreamingContent] = useState('');
     const [error, setError] = useState(null);
     const [lastSentMessage, setLastSentMessage] = useState('');
+    const [user, setUser] = useState(null);
 
     const messagesEndRef = useRef(null);
+
+    const loadChatHistory = async (userId) => {
+        const { data, error } = await supabase
+            .from('chat_messages')
+            .select('*')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: true });
+
+        if (error) {
+            console.error('Erro ao carregar histórico:', error);
+        } else if (data) {
+            setMessages(data.map(m => ({ role: m.role, content: m.content })));
+        }
+    };
+
+    const saveMessage = async (role, content, userId) => {
+        const currentUserId = userId || user?.id;
+        if (!currentUserId) return;
+
+        const { error } = await supabase
+            .from('chat_messages')
+            .insert([
+                { user_id: currentUserId, role, content }
+            ]);
+
+        if (error) console.error('Erro ao salvar mensagem:', error);
+    };
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
+
+    // Verificar autenticação e carregar histórico
+    useEffect(() => {
+        const checkUser = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user) {
+                setUser(session.user);
+                loadChatHistory(session.user.id);
+            }
+        };
+
+        checkUser();
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null);
+            if (session?.user) {
+                loadChatHistory(session.user.id);
+            } else {
+                setMessages([]);
+            }
+        });
+
+        return () => subscription.unsubscribe();
+    }, []);
 
     // Rola para o fundo sempre que o histórico ou o streaming mudar
     useEffect(() => {
@@ -45,6 +99,9 @@ const Chat = () => {
         setError(null);
         setStreamingContent('');
 
+        // Persistir mensagem do usuário
+        saveMessage('user', userMessage.content);
+
         let accumulated = '';
 
         try {
@@ -55,9 +112,13 @@ const Chat = () => {
                     setStreamingContent(accumulated);
                 },
                 () => {
-                    setMessages(prev => [...prev, { role: 'assistant', content: accumulated }]);
+                    const assistantMessage = { role: 'assistant', content: accumulated };
+                    setMessages(prev => [...prev, assistantMessage]);
                     setStreamingContent('');
                     setIsLoading(false);
+
+                    // Persistir resposta do assistente
+                    saveMessage('assistant', accumulated);
                 },
                 (err) => {
                     setError(err);
@@ -106,8 +167,23 @@ const Chat = () => {
         }
     };
 
-    const handleNewChat = () => {
-        if (window.confirm('Deseja iniciar uma nova conversa e limpar o histórico?')) {
+    const handleNewChat = async () => {
+        const confirmMsg = user
+            ? 'Deseja iniciar uma nova conversa? Isso limpará o histórico visual, mas suas mensagens continuam salvas no seu perfil.'
+            : 'Deseja iniciar uma nova conversa e limpar o histórico?';
+
+        if (window.confirm(confirmMsg)) {
+            // Se quiser limpar mesmo no banco de dados, faríamos um DELETE aqui.
+            // Por enquanto, apenas limpamos o estado local para uma "nova sessão" visual.
+            if (user) {
+                const { error } = await supabase
+                    .from('chat_messages')
+                    .delete()
+                    .eq('user_id', user.id);
+
+                if (error) console.error('Erro ao limpar histórico:', error);
+            }
+
             setMessages([]);
             setStreamingContent('');
             setError(null);
@@ -157,8 +233,17 @@ const Chat = () => {
                         {messages.length === 0 && !isLoading && (
                             <section className="chat-start-view animate-fade-in">
                                 <div className="start-icon">🕊️</div>
-                                <h2>Como posso te ajudar hoje?</h2>
-                                <p>Escolha um tema abaixo ou escreva sua própria dúvida para iniciarmos.</p>
+                                {user ? (
+                                    <>
+                                        <h2>Olá! Como posso te ajudar hoje?</h2>
+                                        <p>Sua conversa está sendo salva para você nunca perder um conselho importante.</p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <h2>Como posso te ajudar hoje?</h2>
+                                        <p>Escolha um tema abaixo ou escreva sua própria dúvida para iniciarmos.</p>
+                                    </>
+                                )}
 
                                 <div className="start-suggestion-box">
                                     <SuggestionChips onSelect={(t) => handleQuickPrompt(t.id)} />
@@ -213,6 +298,11 @@ const Chat = () => {
                             disabled={isLoading}
                         />
                     </div>
+                    {!user && (
+                        <div className="auth-nudge-footer">
+                            <p><Sparkles size={12} /> <Link to="/login">Faça login</Link> para salvar seu histórico de aconselhamento.</p>
+                        </div>
+                    )}
                     <div className="footer-mini-disclaimer">
                         <p>Plataforma de apoio baseada em IA. Para suporte humano em crises, procure uma igreja ou profissional.</p>
                     </div>

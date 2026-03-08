@@ -266,6 +266,34 @@
     }
 }
 
+.auth-nudge-footer {
+    text-align: center;
+    padding: 8px;
+    background: rgba(244, 211, 106, 0.05);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border: 1px dashed rgba(244, 211, 106, 0.2);
+}
+
+.auth-nudge-footer p {
+    font-size: 0.8rem;
+    color: var(--text-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.auth-nudge-footer a {
+    color: var(--accent-blue-strong);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-nudge-footer a:hover {
+    text-decoration: underline;
+}
+
 .animate-fade-in {
     animation: slideUp 0.4s ease-out forwards;
 }
