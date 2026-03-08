@@ -233,9 +233,9 @@ export default function Home() {
                                         <div className="dot green"></div>
                                     </div>
                                     <div className="mockup-content">
-                                        <div className="msg ia">📖 Me ajude com um estudo sobre esperança...</div>
-                                        <div className="msg user">Olá! Aqui está um esboço baseado em Romanos 15:13...</div>
-                                        <div className="msg ia">Paz do Senhor. Qual o versículo de hoje?</div>
+                                        <div className="msg user">📖 Me ajude com um estudo sobre esperança...</div>
+                                        <div className="msg ia">Olá! Aqui está um esboço baseado em Romanos 15:13...</div>
+                                        <div className="msg user">Amém. Poderia me sugerir uma oração?</div>
                                         <div className="msg-skeleton"></div>
                                         <div className="msg-skeleton short"></div>
                                     </div>

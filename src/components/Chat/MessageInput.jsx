@@ -1,10 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import './MessageInput.css';
 
-export default function MessageInput({ onSend, disabled }) {
-    const [value, setValue] = useState('');
+export default function MessageInput({ value, onChange, onSend, disabled }) {
     const textareaRef = useRef(null);
 
+    // Auto-resize do textarea conforme o conteúdo
     useEffect(() => {
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
@@ -13,11 +13,12 @@ export default function MessageInput({ onSend, disabled }) {
     }, [value]);
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+        if (e) e.preventDefault();
         const trimmed = value.trim();
         if (!trimmed || disabled) return;
+        
         onSend(trimmed);
-        setValue('');
+        
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
         }
@@ -26,7 +27,7 @@ export default function MessageInput({ onSend, disabled }) {
     const handleKeyDown = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            handleSubmit(e);
+            handleSubmit();
         }
     };
 
@@ -38,7 +39,7 @@ export default function MessageInput({ onSend, disabled }) {
                     id="chat-message-input"
                     className="message-input"
                     value={value}
-                    onChange={(e) => setValue(e.target.value)}
+                    onChange={(e) => onChange(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Ex.: 'Crie um devocional sobre Salmo 23' ou 'Me ajude a montar um estudo sobre perdão'..."
                     disabled={disabled}

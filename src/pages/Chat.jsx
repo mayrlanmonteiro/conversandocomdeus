@@ -5,16 +5,16 @@ import LoadingDots from '../components/ui/LoadingDots';
 import SuggestionChips from '../components/Chat/SuggestionChips';
 import Header from '../components/Layout/Header';
 import { sendMessageStream } from '../services/ai';
-import { ShieldCheck, X, RefreshCw, Sparkles, BookOpen, AlertCircle } from 'lucide-react';
+import { ShieldCheck, RefreshCw, Sparkles, AlertCircle } from 'lucide-react';
 import './Chat.css';
 
 const Chat = () => {
     const [messages, setMessages] = useState([]);
+    const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [streamingContent, setStreamingContent] = useState('');
     const [error, setError] = useState(null);
-    const [activeTemplate, setActiveTemplate] = useState(null);
-    const [templateValues, setTemplateValues] = useState({});
+    const [lastSentMessage, setLastSentMessage] = useState('');
 
     const messagesEndRef = useRef(null);
 
@@ -22,17 +22,28 @@ const Chat = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
+    // Rola para o fundo sempre que o histórico ou o streaming mudar
     useEffect(() => {
-        scrollToBottom();
+        if (messages.length > 0 || streamingContent) {
+            scrollToBottom();
+        }
     }, [messages, streamingContent]);
 
+    // Função principal de envio de mensagem
     const sendMessage = async (text) => {
-        if (!text.trim()) return;
+        const messageText = text || inputValue;
+        if (!messageText.trim() || isLoading) return;
 
-        const userMessage = { role: 'user', content: text };
+        const userMessage = { role: 'user', content: messageText.trim() };
+        
+        // Salva para possível reenvio em caso de erro
+        setLastSentMessage(messageText.trim());
+        
         setMessages(prev => [...prev, userMessage]);
+        setInputValue(''); // Limpa o input após enviar
         setIsLoading(true);
         setError(null);
+        setStreamingContent('');
 
         let accumulated = '';
 
@@ -54,25 +65,45 @@ const Chat = () => {
                 }
             );
         } catch (err) {
-            setError(err.message);
+            setError(err.message || "Erro inesperado ao enviar mensagem.");
             setIsLoading(false);
         }
     };
 
-    const handleSuggestionClick = (template) => {
-        setActiveTemplate(template);
-        const initialValues = {};
-        template.fields.forEach(f => {
-            initialValues[f.id] = f.defaultValue || '';
-        });
-        setTemplateValues(initialValues);
-    };
+    // Lida com atalhos rápidos (Quick Prompts)
+    const handleQuickPrompt = (type) => {
+        let prompt = '';
+        switch (type) {
+            case 'bible-study':
+                prompt = 'Monte um estudo bíblico para célula sobre [TEMA], com contexto, pontos principais, aplicações e perguntas.';
+                break;
+            case 'devocional':
+                prompt = 'Crie um devocional para hoje sobre [TEMA], com versículo, reflexão e aplicação prática.';
+                break;
+            case 'pregacao':
+                prompt = 'Me ajude a montar uma pregação sobre [TEMA], com introdução, 3 pontos principais e conclusão.';
+                break;
+            case 'conselho':
+                prompt = 'Preciso de um conselho bíblico sobre a seguinte situação: [DESCREVA AQUI].';
+                break;
+            case 'explicar':
+                prompt = 'Explique o contexto e o significado do texto bíblico de [REFERÊNCIA BÍBLICA] e aplique à vida prática.';
+                break;
+            default:
+                prompt = '';
+        }
 
-    const handleTemplateSubmit = (e) => {
-        e.preventDefault();
-        const prompt = activeTemplate.generatePrompt(templateValues);
-        setActiveTemplate(null);
-        sendMessage(prompt);
+        if (prompt) {
+            setInputValue(prompt);
+            // Focar no input após selecionar
+            setTimeout(() => {
+                const inputEl = document.getElementById('chat-message-input');
+                if (inputEl) {
+                    inputEl.focus();
+                    inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length);
+                }
+            }, 0);
+        }
     };
 
     const handleNewChat = () => {
@@ -80,7 +111,16 @@ const Chat = () => {
             setMessages([]);
             setStreamingContent('');
             setError(null);
-            setActiveTemplate(null);
+            setInputValue('');
+            setLastSentMessage('');
+        }
+    };
+
+    const handleRetry = () => {
+        if (lastSentMessage) {
+            // Remove a última mensagem que falhou para não duplicar no UI local
+            setMessages(prev => prev.slice(0, -1));
+            sendMessage(lastSentMessage);
         }
     };
 
@@ -88,10 +128,7 @@ const Chat = () => {
         <div className="chat-page">
             <Header />
 
-            {/* Painel Central do Chat (Premium Light - Antigravity) */}
             <div className="chat-panel">
-
-                {/* Header Claro do Chat */}
                 <header className="chat-panel-header">
                     <div className="chat-header-info">
                         <div className="header-icon-rounded">
@@ -102,13 +139,12 @@ const Chat = () => {
                             <p>IA de apoio espiritual (não substitui um pastor ou profissional)</p>
                         </div>
                     </div>
-                    <button className="btn-refresh-chat" onClick={handleNewChat}>
+                    <button className="btn-refresh-chat" onClick={handleNewChat} disabled={isLoading}>
                         <RefreshCw size={14} />
                         <span>Nova conversa</span>
                     </button>
                 </header>
 
-                {/* Área de Avisos / Selo de Segurança */}
                 <div className="safety-ribbon">
                     <div className="safety-pill">
                         <ShieldCheck size={14} />
@@ -116,61 +152,18 @@ const Chat = () => {
                     </div>
                 </div>
 
-                {/* Área de Mensagens */}
                 <main className="chat-messages-viewport">
                     <div className="messages-scroll-area">
-                        {messages.length === 0 && !isLoading && !activeTemplate && (
+                        {messages.length === 0 && !isLoading && (
                             <section className="chat-start-view animate-fade-in">
                                 <div className="start-icon">🕊️</div>
                                 <h2>Como posso te ajudar hoje?</h2>
-                                <p>Inicie sua jornada espiritual escolhendo um dos modelos abaixo ou digitando livremente sua necessidade.</p>
+                                <p>Escolha um tema abaixo ou escreva sua própria dúvida para iniciarmos.</p>
 
                                 <div className="start-suggestion-box">
-                                    <SuggestionChips onSelect={handleSuggestionClick} />
+                                    <SuggestionChips onSelect={(t) => handleQuickPrompt(t.id)} />
                                 </div>
                             </section>
-                        )}
-
-                        {activeTemplate && (
-                            <div className="chat-modal-overlay">
-                                <div className="template-card-panel">
-                                    <div className="template-card-header">
-                                        <div className="title-with-icon">
-                                            <BookOpen size={20} className="text-blue" />
-                                            <h4>{activeTemplate.title}</h4>
-                                        </div>
-                                        <button className="btn-close-modal" onClick={() => setActiveTemplate(null)}>
-                                            <X size={20} />
-                                        </button>
-                                    </div>
-                                    <form onSubmit={handleTemplateSubmit} className="template-form-premium">
-                                        <div className="form-fields-grid">
-                                            {activeTemplate.fields.map(field => (
-                                                <div key={field.id} className="premium-form-group">
-                                                    <label>{field.label}</label>
-                                                    {field.id === 'situacao' || (field.id === 'tema' && (activeTemplate.id === 'bible-study' || activeTemplate.id === 'devocional')) ? (
-                                                        <textarea
-                                                            required={field.required}
-                                                            value={templateValues[field.id] || ''}
-                                                            onChange={(e) => setTemplateValues({ ...templateValues, [field.id]: e.target.value })}
-                                                            placeholder={field.placeholder}
-                                                        />
-                                                    ) : (
-                                                        <input
-                                                            type="text"
-                                                            required={field.required}
-                                                            value={templateValues[field.id] || ''}
-                                                            onChange={(e) => setTemplateValues({ ...templateValues, [field.id]: e.target.value })}
-                                                            placeholder={field.placeholder}
-                                                        />
-                                                    )}
-                                                </div>
-                                            ))}
-                                        </div>
-                                        <button type="submit" className="btn btn-primary btn-full">Gerar Orientação Bíblica</button>
-                                    </form>
-                                </div>
-                            </div>
                         )}
 
                         {messages.map((msg, index) => (
@@ -189,13 +182,15 @@ const Chat = () => {
                         )}
 
                         {error && (
-                            <div className="chat-critical-error">
-                                <div className="error-card-premium">
-                                    <AlertCircle className="error-icon" />
-                                    <div className="error-content">
-                                        <h4>Houve um problema de conexão</h4>
+                            <div className="chat-msg-error animate-fade-in">
+                                <div className="error-bubble">
+                                    <AlertCircle size={18} />
+                                    <div className="error-text">
+                                        <strong>Ops! Algo deu errado:</strong>
                                         <p>{error}</p>
-                                        <button onClick={() => window.location.reload()} className="btn-retry">Tentar novamente</button>
+                                        {lastSentMessage && (
+                                            <button onClick={handleRetry} className="btn-retry-inline">Tentar reenviar</button>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -204,16 +199,20 @@ const Chat = () => {
                     </div>
                 </main>
 
-                {/* Área de Entrada de Mensagem */}
                 <footer className="chat-panel-footer">
                     <div className="footer-chips-wrapper">
-                        <SuggestionChips onSelect={handleSuggestionClick} hideLabel={true} />
+                        <SuggestionChips onSelect={(t) => handleQuickPrompt(t.id)} hideLabel={true} />
                     </div>
                     <div className="input-container-premium">
-                        <MessageInput onSend={sendMessage} disabled={isLoading} />
+                        <MessageInput
+                            value={inputValue}
+                            onChange={setInputValue}
+                            onSend={sendMessage}
+                            disabled={isLoading}
+                        />
                     </div>
                     <div className="footer-mini-disclaimer">
-                        <p>Plataforma de apoio espiritual baseada em IA. Para suporte humano em crises, procure uma igreja local ou profissional de saúde.</p>
+                        <p>Plataforma de apoio baseada em IA. Para suporte humano em crises, procure uma igreja ou profissional.</p>
                     </div>
                 </footer>
             </div>
