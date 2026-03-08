@@ -1,6 +1,7 @@
 .suggestions-section {
-    padding: 12px 0;
+    padding: 4px 0;
     width: 100%;
+    overflow: hidden;
 }
 
 .suggestions-section.footer-mode {
@@ -10,52 +11,45 @@
 }
 
 .suggestions-label {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-weight: 700;
     color: var(--text-gray);
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     display: block;
+    text-align: center;
 }
 
 .suggestions-grid {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-wrap: nowrap;
+    gap: 8px;
     justify-content: center;
-    padding: 4px;
+    padding: 4px 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
 }
 
-@media (max-width: 768px) {
-    .suggestions-grid {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        justify-content: flex-start;
-        padding-bottom: 12px;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-    }
-    
-    .suggestions-grid::-webkit-scrollbar {
-        display: none;
-    }
+.suggestions-grid::-webkit-scrollbar {
+    display: none;
 }
 
 .suggestion-chip {
     background: var(--bg-white);
     border: 1px solid var(--border-light);
     color: var(--accent-blue-strong);
-    padding: 10px 22px;
+    padding: 8px 16px;
     border-radius: 999px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     box-shadow: var(--shadow-sm);
     flex-shrink: 0;
 }
@@ -80,7 +74,7 @@
 
 @media (max-width: 640px) {
     .suggestion-chip {
-        padding: 8px 18px;
-        font-size: 0.8rem;
+        padding: 7px 14px;
+        font-size: 0.75rem;
     }
 }

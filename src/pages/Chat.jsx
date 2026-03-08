@@ -35,10 +35,10 @@ const Chat = () => {
         if (!messageText.trim() || isLoading) return;
 
         const userMessage = { role: 'user', content: messageText.trim() };
-        
+
         // Salva para possível reenvio em caso de erro
         setLastSentMessage(messageText.trim());
-        
+
         setMessages(prev => [...prev, userMessage]);
         setInputValue(''); // Limpa o input após enviar
         setIsLoading(true);
@@ -200,9 +200,11 @@ const Chat = () => {
                 </main>
 
                 <footer className="chat-panel-footer">
-                    <div className="footer-chips-wrapper">
-                        <SuggestionChips onSelect={(t) => handleQuickPrompt(t.id)} hideLabel={true} />
-                    </div>
+                    {messages.length > 0 && (
+                        <div className="footer-chips-wrapper">
+                            <SuggestionChips onSelect={(t) => handleQuickPrompt(t.id)} hideLabel={true} />
+                        </div>
+                    )}
                     <div className="input-container-premium">
                         <MessageInput
                             value={inputValue}
