@@ -7,7 +7,7 @@ import SuggestionChips from '../components/Chat/SuggestionChips';
 import Header from '../components/Layout/Header';
 import { sendMessageStream } from '../services/ai';
 import { supabase } from '../lib/supabase';
-import { ShieldCheck, RefreshCw, Sparkles, AlertCircle } from 'lucide-react';
+import { ShieldCheck, RefreshCw, Sparkles, AlertCircle, Menu, X, MessageSquare, Trash2, Plus } from 'lucide-react';
 import './Chat.css';
 
 const Chat = () => {
@@ -18,14 +18,23 @@ const Chat = () => {
     const [error, setError] = useState(null);
     const [lastSentMessage, setLastSentMessage] = useState('');
     const [user, setUser] = useState(null);
+    const [conversations, setConversations] = useState([]);
+    const [activeConversationId, setActiveConversationId] = useState(null);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const messagesEndRef = useRef(null);
 
-    const loadChatHistory = async (userId) => {
+    const loadChatHistory = async (userId, conversationId) => {
+        if (!conversationId) {
+            setMessages([]);
+            return;
+        }
+
         const { data, error } = await supabase
             .from('chat_messages')
             .select('*')
             .eq('user_id', userId)
+            .eq('conversation_id', conversationId)
             .order('created_at', { ascending: true });
 
         if (error) {
@@ -35,14 +44,29 @@ const Chat = () => {
         }
     };
 
-    const saveMessage = async (role, content, userId) => {
+    const fetchConversations = async (userId) => {
+        const { data, error } = await supabase
+            .from('conversations')
+            .select('*')
+            .eq('user_id', userId)
+            .order('updated_at', { ascending: false });
+
+        if (error) {
+            console.error('Erro ao carregar conversas:', error);
+        } else {
+            setConversations(data || []);
+        }
+    };
+
+    const saveMessage = async (role, content, userId, conversationId) => {
         const currentUserId = userId || user?.id;
-        if (!currentUserId) return;
+        const currentConvId = conversationId || activeConversationId;
+        if (!currentUserId || !currentConvId) return;
 
         const { error } = await supabase
             .from('chat_messages')
             .insert([
-                { user_id: currentUserId, role, content }
+                { user_id: currentUserId, role, content, conversation_id: currentConvId }
             ]);
 
         if (error) console.error('Erro ao salvar mensagem:', error);
@@ -58,7 +82,7 @@ const Chat = () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (session?.user) {
                 setUser(session.user);
-                loadChatHistory(session.user.id);
+                fetchConversations(session.user.id);
             }
         };
 
@@ -67,9 +91,11 @@ const Chat = () => {
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             setUser(session?.user ?? null);
             if (session?.user) {
-                loadChatHistory(session.user.id);
+                fetchConversations(session.user.id);
             } else {
                 setMessages([]);
+                setConversations([]);
+                setActiveConversationId(null);
             }
         });
 
@@ -100,7 +126,27 @@ const Chat = () => {
         setStreamingContent('');
 
         // Persistir mensagem do usuário
-        saveMessage('user', userMessage.content);
+        let currentConvId = activeConversationId;
+
+        if (user && !currentConvId) {
+            // Criar nova conversa se for o primeiro envio de um usuário logado
+            const title = messageText.length > 30 ? messageText.substring(0, 30) + '...' : messageText;
+            const { data, error: convError } = await supabase
+                .from('conversations')
+                .insert([{ user_id: user.id, title }])
+                .select()
+                .single();
+
+            if (convError) {
+                console.error('Erro ao criar conversa:', convError);
+            } else if (data) {
+                currentConvId = data.id;
+                setActiveConversationId(data.id);
+                fetchConversations(user.id);
+            }
+        }
+
+        saveMessage('user', userMessage.content, user?.id, currentConvId);
 
         let accumulated = '';
 
@@ -118,7 +164,14 @@ const Chat = () => {
                     setIsLoading(false);
 
                     // Persistir resposta do assistente
-                    saveMessage('assistant', accumulated);
+                    saveMessage('assistant', accumulated, user?.id, currentConvId);
+
+                    // Atualizar o timestamp da conversa
+                    if (currentConvId) {
+                        supabase.from('conversations')
+                            .update({ updated_at: new Date().toISOString() })
+                            .eq('id', currentConvId);
+                    }
                 },
                 (err) => {
                     setError(err);
@@ -167,28 +220,38 @@ const Chat = () => {
         }
     };
 
-    const handleNewChat = async () => {
-        const confirmMsg = user
-            ? 'Deseja iniciar uma nova conversa? Isso limpará o histórico visual, mas suas mensagens continuam salvas no seu perfil.'
-            : 'Deseja iniciar uma nova conversa e limpar o histórico?';
+    const handleNewChat = () => {
+        setMessages([]);
+        setActiveConversationId(null);
+        setStreamingContent('');
+        setError(null);
+        setInputValue('');
+        setLastSentMessage('');
+        setIsSidebarOpen(false);
+    };
 
-        if (window.confirm(confirmMsg)) {
-            // Se quiser limpar mesmo no banco de dados, faríamos um DELETE aqui.
-            // Por enquanto, apenas limpamos o estado local para uma "nova sessão" visual.
-            if (user) {
-                const { error } = await supabase
-                    .from('chat_messages')
-                    .delete()
-                    .eq('user_id', user.id);
+    const handleSelectConversation = (id) => {
+        setActiveConversationId(id);
+        loadChatHistory(user.id, id);
+        setIsSidebarOpen(false);
+    };
 
-                if (error) console.error('Erro ao limpar histórico:', error);
+    const handleDeleteConversation = async (e, id) => {
+        e.stopPropagation();
+        if (window.confirm('Tem certeza que deseja excluir esta conversa do seu histórico?')) {
+            const { error } = await supabase
+                .from('conversations')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                console.error('Erro ao deletar conversa:', error);
+            } else {
+                if (activeConversationId === id) {
+                    handleNewChat();
+                }
+                fetchConversations(user.id);
             }
-
-            setMessages([]);
-            setStreamingContent('');
-            setError(null);
-            setInputValue('');
-            setLastSentMessage('');
         }
     };
 
@@ -204,112 +267,159 @@ const Chat = () => {
         <div className="chat-page">
             <Header />
 
-            <div className="chat-panel">
-                <header className="chat-panel-header">
-                    <div className="chat-header-info">
-                        <div className="header-icon-rounded">
-                            <Sparkles size={20} />
-                        </div>
-                        <div className="header-titles">
-                            <h3>Assistente – Conversando com Deus</h3>
-                            <p>IA de apoio espiritual (não substitui um pastor ou profissional)</p>
-                        </div>
+            <div className="chat-layout">
+                {/* Sidebar com Histórico */}
+                <aside className={`chat-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+                    <div className="sidebar-header">
+                        <h2>Histórico</h2>
+                        <button className="sidebar-close-btn" onClick={() => setIsSidebarOpen(false)}>
+                            <X size={20} />
+                        </button>
                     </div>
-                    <button className="btn-refresh-chat" onClick={handleNewChat} disabled={isLoading}>
-                        <RefreshCw size={14} />
-                        <span>Nova conversa</span>
+
+                    <button className="new-chat-sidebar-btn" onClick={handleNewChat}>
+                        <Plus size={18} />
+                        Nova Conversa
                     </button>
-                </header>
 
-                <div className="safety-ribbon">
-                    <div className="safety-pill">
-                        <ShieldCheck size={14} />
-                        <span>Espaço seguro e privativo para a sua fé.</span>
-                    </div>
-                </div>
-
-                <main className="chat-messages-viewport">
-                    <div className="messages-scroll-area">
-                        {messages.length === 0 && !isLoading && (
-                            <section className="chat-start-view animate-fade-in">
-                                <div className="start-icon">🕊️</div>
-                                {user ? (
-                                    <>
-                                        <h2>Olá! Como posso te ajudar hoje?</h2>
-                                        <p>Sua conversa está sendo salva para você nunca perder um conselho importante.</p>
-                                    </>
-                                ) : (
-                                    <>
-                                        <h2>Como posso te ajudar hoje?</h2>
-                                        <p>Escolha um tema abaixo ou escreva sua própria dúvida para iniciarmos.</p>
-                                    </>
-                                )}
-
-                                <div className="start-suggestion-box">
-                                    <SuggestionChips onSelect={(t) => handleQuickPrompt(t.id)} />
-                                </div>
-                            </section>
-                        )}
-
-                        {messages.map((msg, index) => (
-                            <MessageBubble key={index} message={msg} />
-                        ))}
-
-                        {streamingContent && (
-                            <MessageBubble message={{ role: 'assistant', content: streamingContent }} isStreaming={true} />
-                        )}
-
-                        {isLoading && !streamingContent && (
-                            <div className="assistant-loading-indicator">
-                                <LoadingDots />
-                                <span>Refletindo sobre as Escrituras...</span>
+                    <div className="conversations-list">
+                        {!user ? (
+                            <div className="sidebar-guest-nudge">
+                                <Sparkles size={16} />
+                                <p>Entre para salvar suas conversas e acessá-las aqui futuramente.</p>
+                                <Link to="/login" className="btn btn-secondary btn-sm">Fazer Login</Link>
                             </div>
+                        ) : conversations.length === 0 ? (
+                            <div className="sidebar-empty">
+                                <p>Nenhuma conversa ainda.</p>
+                            </div>
+                        ) : (
+                            conversations.map(conv => (
+                                <div
+                                    key={conv.id}
+                                    className={`conversation-item ${activeConversationId === conv.id ? 'active' : ''}`}
+                                    onClick={() => handleSelectConversation(conv.id)}
+                                >
+                                    <MessageSquare size={16} />
+                                    <span className="conv-title">{conv.title}</span>
+                                    <button
+                                        className="btn-delete-conv"
+                                        onClick={(e) => handleDeleteConversation(e, conv.id)}
+                                        title="Excluir conversa"
+                                    >
+                                        <Trash2 size={14} />
+                                    </button>
+                                </div>
+                            ))
                         )}
+                    </div>
+                </aside>
 
-                        {error && (
-                            <div className="chat-msg-error animate-fade-in">
-                                <div className="error-bubble">
-                                    <AlertCircle size={18} />
-                                    <div className="error-text">
-                                        <strong>Ops! Algo deu errado:</strong>
-                                        <p>{error}</p>
-                                        {lastSentMessage && (
-                                            <button onClick={handleRetry} className="btn-retry-inline">Tentar reenviar</button>
-                                        )}
+                <div className="chat-panel">
+                    <header className="chat-panel-header">
+                        <div className="chat-header-info">
+                            <button className="sidebar-toggle-btn" onClick={() => setIsSidebarOpen(true)}>
+                                <Menu size={20} />
+                            </button>
+                            <div className="header-icon-rounded">
+                                <Sparkles size={20} />
+                            </div>
+                            <div className="header-titles">
+                                <h3>{activeConversationId ? conversations.find(c => c.id === activeConversationId)?.title : 'Assistente Spiritual'}</h3>
+                                <p>Conversando com Deus</p>
+                            </div>
+                        </div>
+                        <button className="btn-refresh-chat" onClick={handleNewChat} disabled={isLoading}>
+                            <RefreshCw size={14} />
+                            <span className="visually-hidden-mobile">Nova conversa</span>
+                        </button>
+                    </header>
+
+                    <div className="safety-ribbon">
+                        <div className="safety-pill">
+                            <ShieldCheck size={14} />
+                            <span>Espaço seguro e privativo para a sua fé.</span>
+                        </div>
+                    </div>
+
+                    <main className="chat-messages-viewport">
+                        <div className="messages-scroll-area">
+                            {messages.length === 0 && !isLoading && (
+                                <section className="chat-start-view animate-fade-in">
+                                    <div className="start-icon">🕊️</div>
+                                    {user ? (
+                                        <>
+                                            <h2>Olá! Como posso te ajudar hoje?</h2>
+                                            <p>Suas conversas agora são salvas individualmente no seu histórico ao lado.</p>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <h2>Como posso te ajudar hoje?</h2>
+                                            <p>Escolha um tema abaixo ou escreva sua própria dúvida para iniciarmos.</p>
+                                        </>
+                                    )}
+
+                                    <div className="start-suggestion-box">
+                                        <SuggestionChips onSelect={(t) => handleQuickPrompt(t.id)} />
+                                    </div>
+                                </section>
+                            )}
+
+                            {messages.map((msg, index) => (
+                                <MessageBubble key={index} message={msg} />
+                            ))}
+
+                            {streamingContent && (
+                                <MessageBubble message={{ role: 'assistant', content: streamingContent }} isStreaming={true} />
+                            )}
+
+                            {isLoading && !streamingContent && (
+                                <div className="assistant-loading-indicator">
+                                    <LoadingDots />
+                                    <span>Refletindo sobre as Escrituras...</span>
+                                </div>
+                            )}
+
+                            {error && (
+                                <div className="chat-msg-error animate-fade-in">
+                                    <div className="error-bubble">
+                                        <AlertCircle size={18} />
+                                        <div className="error-text">
+                                            <strong>Ops! Algo deu errado:</strong>
+                                            <p>{error}</p>
+                                            {lastSentMessage && (
+                                                <button onClick={handleRetry} className="btn-retry-inline">Tentar reenviar</button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
+                            )}
+                            <div ref={messagesEndRef} />
+                        </div>
+                    </main>
+
+                    <footer className="chat-panel-footer">
+                        {messages.length > 0 && (
+                            <div className="footer-chips-wrapper">
+                                <SuggestionChips onSelect={(t) => handleQuickPrompt(t.id)} hideLabel={true} />
                             </div>
                         )}
-                        <div ref={messagesEndRef} />
-                    </div>
-                </main>
-
-                <footer className="chat-panel-footer">
-                    {messages.length > 0 && (
-                        <div className="footer-chips-wrapper">
-                            <SuggestionChips onSelect={(t) => handleQuickPrompt(t.id)} hideLabel={true} />
+                        <div className="input-container-premium">
+                            <MessageInput
+                                value={inputValue}
+                                onChange={setInputValue}
+                                onSend={sendMessage}
+                                disabled={isLoading}
+                            />
                         </div>
-                    )}
-                    <div className="input-container-premium">
-                        <MessageInput
-                            value={inputValue}
-                            onChange={setInputValue}
-                            onSend={sendMessage}
-                            disabled={isLoading}
-                        />
-                    </div>
-                    {!user && (
-                        <div className="auth-nudge-footer">
-                            <p><Sparkles size={12} /> <Link to="/login">Faça login</Link> para salvar seu histórico de aconselhamento.</p>
+                        <div className="footer-mini-disclaimer">
+                            <p>Plataforma de apoio baseada em IA. Para suporte humano em crises, procure uma igreja ou profissional.</p>
                         </div>
-                    )}
-                    <div className="footer-mini-disclaimer">
-                        <p>Plataforma de apoio baseada em IA. Para suporte humano em crises, procure uma igreja ou profissional.</p>
-                    </div>
-                </footer>
+                    </footer>
+                </div>
             </div>
         </div>
     );
-};
+}
 
 export default Chat;
