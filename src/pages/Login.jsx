@@ -54,7 +54,7 @@ export default function Login() {
                     email,
                     password,
                     options: {
-                        emailRedirectTo: window.location.origin
+                        emailRedirectTo: 'https://conversandocomdeus.vercel.app/chat'
                     }
                 });
                 if (signUpError) throw signUpError;
