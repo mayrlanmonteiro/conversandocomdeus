@@ -50,7 +50,7 @@
 
 .login-header {
     text-align: center;
-    margin-bottom: 8px;
+    margin-bottom: 24px;
 }
 
 .login-logo {
@@ -58,6 +58,9 @@
     margin-bottom: 24px;
     text-decoration: none;
     transition: transform 0.3s ease;
+    position: relative;
+    width: 250px;
+    height: 80px;
 }
 
 .login-logo:hover {
@@ -65,12 +68,14 @@
 }
 
 .brand-logo-login {
-    height: 60px;
-    width: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    max-width: none;
+    height: auto;
     object-fit: contain;
-    margin: 0 auto;
-    transform: scale(3.5);
-    transform-origin: center center;
     filter: drop-shadow(0 0 15px rgba(255, 255, 255, 1));
 }
 

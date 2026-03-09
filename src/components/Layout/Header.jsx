@@ -50,14 +50,9 @@ export default function Header() {
                         </div>
                     ) : (
                         <div className="nav-guest">
-                            <Link to="/login" className="btn btn-secondary btn-sm" style={{ marginRight: '10px' }}>
+                            <Link to="/login" className="btn btn-primary btn-sm btn-glow">
                                 Entrar
                             </Link>
-                            {!isChat && (
-                                <Link to="/chat" className="btn btn-primary btn-sm btn-glow" id="btn-start-chat-header">
-                                    Iniciar Conversa
-                                </Link>
-                            )}
                         </div>
                     )}
                 </nav>

@@ -121,8 +121,8 @@ export default function Home() {
                     </p>
 
                     <div className="hero-actions animate-fade-in delay-2">
-                        <Link to="/chat" className="btn btn-primary btn-large btn-glow" id="btn-start-chat-hero">
-                            🕊️ Começar Conversa
+                        <Link to="/login" className="btn btn-primary btn-large btn-glow" id="btn-login-hero">
+                            🕊️ Entrar na Plataforma
                         </Link>
                         <a href="#como-funciona" className="btn btn-secondary btn-large" id="btn-how-it-works">
                             Como funciona

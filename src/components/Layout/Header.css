@@ -47,6 +47,9 @@
     align-items: center;
     text-decoration: none;
     transition: transform 0.2s ease;
+    position: relative;
+    width: 220px;
+    height: 100%;
 }
 
 .header-logo:hover {
@@ -54,13 +57,16 @@
 }
 
 .brand-logo {
-    height: 48px;
-    width: auto;
+    position: absolute;
+    top: 50%;
+    left: -20px;
+    transform: translateY(-50%);
+    width: 300px;
+    max-width: none;
+    height: auto;
     object-fit: contain;
     display: block;
-    transform: scale(3.5);
-    transform-origin: left center;
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
 }
 
 @media (max-width: 640px) {

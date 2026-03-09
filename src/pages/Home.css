@@ -64,24 +64,31 @@
 }
 
 .hero-title-img {
-    margin-bottom: 0px;
+    margin-top: -80px;
+    margin-bottom: -100px;
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
 }
 
 .hero-logo {
-    max-width: clamp(250px, 50vw, 450px);
+    width: 750px;
+    max-width: 140%;
+    margin-left: -20%;
     height: auto;
     object-fit: contain;
-    transform: scale(1.8);
-    transform-origin: center center;
-    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.7));
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4));
 }
 
 .hero-subtitle {
     font-size: clamp(1.1rem, 3vw, 1.3rem);
-    color: var(--text-secondary);
-    max-width: 600px;
+    color: #F8FAFC;
+    max-width: 700px;
     margin: 0 auto 48px;
     line-height: 1.6;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.9);
+    position: relative;
+    z-index: 5;
 }
 
 .hero-actions {
