@@ -50,7 +50,7 @@
 
 .login-header {
     text-align: center;
-    margin-bottom: 36px;
+    margin-bottom: 8px;
 }
 
 .login-logo {
@@ -69,6 +69,9 @@
     width: auto;
     object-fit: contain;
     margin: 0 auto;
+    transform: scale(3.5);
+    transform-origin: center center;
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 1));
 }
 
 .login-header h2 {
