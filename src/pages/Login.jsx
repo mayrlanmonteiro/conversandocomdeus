@@ -97,7 +97,7 @@ export default function Login() {
             <div className="login-card">
                 <header className="login-header">
                     <Link to="/" className="login-logo" aria-label="Voltar ao início">
-                        <span className="logo-title">Conversando <span className="text-gold">com Deus</span></span>
+                        <img src="/logo.png" alt="Conversando com Deus" className="brand-logo-login" />
                     </Link>
                     <h2>{isSignUp ? 'Crie sua conta' : 'Bem-vindo de volta'}</h2>
                     <p>{isSignUp ? 'Comece sua jornada espiritual hoje.' : 'Acesse seu histórico e continue sua jornada.'}</p>

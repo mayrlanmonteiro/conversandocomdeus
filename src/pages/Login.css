@@ -41,6 +41,7 @@
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -63,11 +64,11 @@
     transform: scale(1.02);
 }
 
-.login-logo .logo-title {
-    font-size: 1.75rem;
-    font-weight: 800;
-    color: #111827;
-    letter-spacing: -0.02em;
+.brand-logo-login {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+    margin: 0 auto;
 }
 
 .login-header h2 {
@@ -103,8 +104,15 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Formulário */
@@ -241,8 +249,13 @@
 }
 
 @keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Separador Premium */

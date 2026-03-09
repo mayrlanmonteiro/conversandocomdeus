@@ -110,9 +110,8 @@ export default function Home() {
                         <span className="badge-text">Assistente Espiritual com IA</span>
                     </div>
 
-                    <h1 className="hero-title animate-fade-in">
-                        Conversando <br />
-                        <span className="hero-title-accent">com Deus</span>
+                    <h1 className="hero-title-img animate-fade-in">
+                        <img src="/logo.png" alt="Conversando com Deus" className="hero-logo" />
                     </h1>
 
                     <p className="hero-subtitle animate-fade-in delay-1">

@@ -63,18 +63,15 @@
     color: var(--primary-gold);
 }
 
-.hero-title {
-    font-size: clamp(3rem, 10vw, 5rem);
-    line-height: 1;
+.hero-title-img {
     margin-bottom: 24px;
-    font-weight: 700;
 }
 
-.hero-title-accent {
-    color: var(--primary-gold);
-    display: block;
-    margin-top: 4px;
-    text-shadow: var(--glow-gold);
+.hero-logo {
+    max-width: clamp(280px, 60vw, 600px);
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.1));
 }
 
 .hero-subtitle {
