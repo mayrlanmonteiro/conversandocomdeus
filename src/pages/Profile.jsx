@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import Header from '../components/Layout/Header';
-import { User, Mail, Calendar, Save, CheckCircle, AlertCircle, MessageSquare } from 'lucide-react';
+import { User, Mail, Calendar, Save, CheckCircle, AlertCircle, MessageSquare, Bookmark, Trash2, Quote } from 'lucide-react';
 import './Profile.css';
 
 export default function Profile() {
@@ -16,6 +16,7 @@ export default function Profile() {
         email: ''
     });
     const [status, setStatus] = useState({ type: '', message: '' });
+    const [bookmarks, setBookmarks] = useState([]);
 
     useEffect(() => {
         async function getProfile() {
@@ -35,13 +36,22 @@ export default function Profile() {
                     email: user.email
                 });
 
-                // Contar mensagens para as estatísticas
+                // Carregar contagem de mensagens
                 const { count, error: countError } = await supabase
                     .from('chat_messages')
                     .select('*', { count: 'exact', head: true })
                     .eq('user_id', user.id);
 
                 if (!countError) setMessageCount(count || 0);
+
+                // Carregar favoritos
+                const { data: bookmarkData, error: bookmarkError } = await supabase
+                    .from('bookmarks')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .order('created_at', { ascending: false });
+
+                if (!bookmarkError) setBookmarks(bookmarkData || []);
 
             } catch (error) {
                 console.error('Erro ao carregar perfil:', error);
@@ -71,6 +81,17 @@ export default function Profile() {
             setStatus({ type: 'error', message: error.message });
         } finally {
             setUpdating(false);
+        }
+    }
+
+    async function removeBookmark(id) {
+        const { error } = await supabase
+            .from('bookmarks')
+            .delete()
+            .eq('id', id);
+
+        if (!error) {
+            setBookmarks(bookmarks.filter(b => b.id !== id));
         }
     }
 
@@ -117,6 +138,10 @@ export default function Profile() {
                                 <span className="stat-label">Mensagens</span>
                             </div>
                             <div className="stat-item">
+                                <span className="stat-value">{bookmarks.length}</span>
+                                <span className="stat-label">Favoritos</span>
+                            </div>
+                            <div className="stat-item">
                                 <span className="stat-value">
                                     {new Date(user.created_at).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}
                                 </span>
@@ -126,6 +151,42 @@ export default function Profile() {
                     </div>
 
                     <div className="profile-content">
+                        <section className="profile-section">
+                            <h3 className="section-title">
+                                <Quote size={20} />
+                                Conselhos e Orações Favoritas
+                            </h3>
+
+                            {bookmarks.length === 0 ? (
+                                <div className="empty-bookmarks">
+                                    <Bookmark size={48} />
+                                    <p>Nenhum conselho salvo ainda. Vá ao chat e clique na estrela para guardar uma mensagem!</p>
+                                </div>
+                            ) : (
+                                <div className="bookmarks-grid">
+                                    {bookmarks.map((bookmark) => (
+                                        <div key={bookmark.id} className="bookmark-card">
+                                            <div className="bookmark-content">
+                                                {bookmark.content}
+                                            </div>
+                                            <div className="bookmark-footer">
+                                                <span className="bookmark-date">
+                                                    Salvo em {new Date(bookmark.created_at).toLocaleDateString('pt-BR')}
+                                                </span>
+                                                <button
+                                                    className="btn-remove-bookmark"
+                                                    onClick={() => removeBookmark(bookmark.id)}
+                                                    title="Remover dos favoritos"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </section>
+
                         <section className="profile-section">
                             <h3 className="section-title">
                                 <User size={20} />

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { LogIn, UserPlus, Mail, Lock, AlertCircle } from 'lucide-react';
+import { LogIn, UserPlus, Mail, Lock, AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
 import './Login.css';
 
 export default function Login() {
@@ -9,12 +9,42 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isSignUp, setIsSignUp] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [fieldErrors, setFieldErrors] = useState({ email: '', password: '' });
+
+    const validateForm = () => {
+        let isValid = true;
+        const newErrors = { email: '', password: '' };
+
+        // Validação de e-mail
+        if (!email.trim()) {
+            newErrors.email = 'Por favor, informe seu e-mail.';
+            isValid = false;
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+            newErrors.email = 'Por favor, insira um e-mail válido.';
+            isValid = false;
+        }
+
+        // Validação de senha
+        if (!password) {
+            newErrors.password = 'Por favor, informe sua senha.';
+            isValid = false;
+        } else if (password.length < 6) {
+            newErrors.password = 'A senha deve ter pelo menos 6 caracteres.';
+            isValid = false;
+        }
+
+        setFieldErrors(newErrors);
+        return isValid;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validateForm()) return;
+
         setLoading(true);
         setError(null);
 
@@ -48,6 +78,7 @@ export default function Login() {
 
     const handleGoogleLogin = async () => {
         try {
+            setLoading(true);
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
@@ -57,86 +88,124 @@ export default function Login() {
             if (error) throw error;
         } catch (err) {
             setError(err.message);
+            setLoading(false);
         }
     };
 
     return (
         <div className="login-container">
             <div className="login-card">
-                <div className="login-header">
-                    <Link to="/" className="login-logo">
+                <header className="login-header">
+                    <Link to="/" className="login-logo" aria-label="Voltar ao início">
                         <span className="logo-title">Conversando <span className="text-gold">com Deus</span></span>
                     </Link>
                     <h2>{isSignUp ? 'Crie sua conta' : 'Bem-vindo de volta'}</h2>
                     <p>{isSignUp ? 'Comece sua jornada espiritual hoje.' : 'Acesse seu histórico e continue sua jornada.'}</p>
-                </div>
+                </header>
 
                 {error && (
-                    <div className="error-message">
+                    <div className="error-banner animate-fade-in" role="alert">
                         <AlertCircle size={18} />
                         <span>{error}</span>
                     </div>
                 )}
 
-                <form className="login-form" onSubmit={handleSubmit}>
+                <form className="login-form" onSubmit={handleSubmit} noValidate>
                     <div className="form-group">
-                        <label>E-mail</label>
-                        <div style={{ position: 'relative' }}>
-                            <Mail size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-gray-light)' }} />
+                        <label htmlFor="email">E-mail</label>
+                        <div className={`input-wrapper ${fieldErrors.email ? 'has-error' : ''}`}>
+                            <Mail className="input-icon" size={18} />
                             <input
+                                id="email"
                                 type="email"
-                                placeholder="seu@email.com"
+                                placeholder="exemplo@email.com"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                    if (fieldErrors.email) setFieldErrors({ ...fieldErrors, email: '' });
+                                }}
                                 required
-                                style={{ paddingLeft: '40px' }}
+                                aria-invalid={!!fieldErrors.email}
+                                aria-describedby={fieldErrors.email ? "email-error" : undefined}
                             />
                         </div>
+                        {fieldErrors.email && (
+                            <span id="email-error" className="field-error-msg">{fieldErrors.email}</span>
+                        )}
                     </div>
 
                     <div className="form-group">
-                        <label>Senha</label>
-                        <div style={{ position: 'relative' }}>
-                            <Lock size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-gray-light)' }} />
-                            <input
-                                type="password"
-                                placeholder="••••••••"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                style={{ paddingLeft: '40px' }}
-                            />
+                        <div className="label-row">
+                            <label htmlFor="password">Senha</label>
+                            {!isSignUp && (
+                                <Link to="/forgot-password" id="forgot-password-link" className="helper-link">
+                                    Esqueceu a senha?
+                                </Link>
+                            )}
                         </div>
+                        <div className={`input-wrapper ${fieldErrors.password ? 'has-error' : ''}`}>
+                            <Lock className="input-icon" size={18} />
+                            <input
+                                id="password"
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Sua senha segura"
+                                value={password}
+                                onChange={(e) => {
+                                    setPassword(e.target.value);
+                                    if (fieldErrors.password) setFieldErrors({ ...fieldErrors, password: '' });
+                                }}
+                                required
+                                aria-invalid={!!fieldErrors.password}
+                                aria-describedby={fieldErrors.password ? "password-error" : undefined}
+                            />
+                            <button
+                                type="button"
+                                className="password-toggle"
+                                onClick={() => setShowPassword(!showPassword)}
+                                aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                            >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                        </div>
+                        {fieldErrors.password && (
+                            <span id="password-error" className="field-error-msg">{fieldErrors.password}</span>
+                        )}
                     </div>
 
-                    <button type="submit" className="login-btn" disabled={loading}>
+                    <button type="submit" className="login-btn-premium" disabled={loading}>
                         {loading ? (
-                            'Carregando...'
+                            <>
+                                <Loader2 className="spinner" size={20} />
+                                <span>Processando...</span>
+                            </>
                         ) : (
                             <>
-                                {isSignUp ? <UserPlus size={18} /> : <LogIn size={18} />}
-                                {isSignUp ? 'Criar Conta' : 'Entrar'}
+                                {isSignUp ? <UserPlus size={20} /> : <LogIn size={20} />}
+                                <span>{isSignUp ? 'Criar Conta' : 'Entrar'}</span>
                             </>
                         )}
                     </button>
                 </form>
 
-                <div className="divider">ou continue com</div>
+                {/* Separador visual com alto contraste */}
+                <div className="divider-premium">
+                    <span className="divider-text">ou continue com</span>
+                </div>
 
-                <div className="social-login">
-                    <button onClick={handleGoogleLogin} className="social-btn">
-                        <img src="https://www.google.com/favicon.ico" alt="Google" width="18" />
-                        Google
+                <div className="social-login-premium">
+                    <button onClick={handleGoogleLogin} className="google-btn" type="button" disabled={loading}>
+                        <img src="https://www.google.com/favicon.ico" alt="" width="18" height="18" />
+                        <span>Google</span>
                     </button>
                 </div>
 
-                <div className="login-footer">
+                <footer className="login-card-footer">
                     {isSignUp ? (
-                        <p>Já tem uma conta? <a href="#" onClick={(e) => { e.preventDefault(); setIsSignUp(false); }}>Entrar</a></p>
+                        <p>Já tem uma conta? <button type="button" className="text-btn" onClick={() => setIsSignUp(false)}>Entrar</button></p>
                     ) : (
-                        <p>Ainda não tem conta? <a href="#" onClick={(e) => { e.preventDefault(); setIsSignUp(true); }}>Cadastre-se</a></p>
+                        <p>Ainda não tem conta? <button type="button" className="text-btn" onClick={() => setIsSignUp(true)}>Cadastre-se</button></p>
                     )}
-                </div>
+                </footer>
             </div>
         </div>
     );

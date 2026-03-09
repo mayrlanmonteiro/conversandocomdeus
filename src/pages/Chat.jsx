@@ -21,6 +21,7 @@ const Chat = () => {
     const [conversations, setConversations] = useState([]);
     const [activeConversationId, setActiveConversationId] = useState(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [bookmarks, setBookmarks] = useState([]);
 
     const messagesEndRef = useRef(null);
 
@@ -72,8 +73,37 @@ const Chat = () => {
         if (error) console.error('Erro ao salvar mensagem:', error);
     };
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const fetchBookmarks = async (userId) => {
+        const { data, error } = await supabase
+            .from('bookmarks')
+            .select('content')
+            .eq('user_id', userId);
+
+        if (!error && data) {
+            setBookmarks(data.map(b => b.content));
+        }
+    };
+
+    const handleBookmark = async (message) => {
+        if (!user) {
+            alert('Faça login para salvar seus favoritos.');
+            return;
+        }
+
+        const { error } = await supabase
+            .from('bookmarks')
+            .insert([{
+                user_id: user.id,
+                conversation_id: activeConversationId,
+                content: message.content,
+                role: 'assistant'
+            }]);
+
+        if (error) {
+            console.error('Erro ao favoritar:', error);
+        } else {
+            setBookmarks(prev => [...prev, message.content]);
+        }
     };
 
     // Verificar autenticação e carregar histórico
@@ -92,15 +122,22 @@ const Chat = () => {
             setUser(session?.user ?? null);
             if (session?.user) {
                 fetchConversations(session.user.id);
+                fetchBookmarks(session.user.id);
             } else {
                 setMessages([]);
                 setConversations([]);
                 setActiveConversationId(null);
+                setBookmarks([]);
             }
         });
 
         return () => subscription.unsubscribe();
     }, []);
+
+    // Função para rolar até o fundo do chat
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
 
     // Rola para o fundo sempre que o histórico ou o streaming mudar
     useEffect(() => {
@@ -366,7 +403,12 @@ const Chat = () => {
                             )}
 
                             {messages.map((msg, index) => (
-                                <MessageBubble key={index} message={msg} />
+                                <MessageBubble
+                                    key={index}
+                                    message={msg}
+                                    onBookmark={handleBookmark}
+                                    isBookmarked={bookmarks.includes(msg.content)}
+                                />
                             ))}
 
                             {streamingContent && (

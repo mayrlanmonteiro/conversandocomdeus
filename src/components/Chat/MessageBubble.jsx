@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { User, Copy, Check, Sparkles } from 'lucide-react';
+import { User, Copy, Check, Sparkles, Bookmark, BookmarkCheck } from 'lucide-react';
 import './MessageBubble.css';
 
-const MessageBubble = ({ message, isStreaming = false }) => {
+const MessageBubble = ({ message, isStreaming = false, onBookmark = null, isBookmarked = false }) => {
     const isAssistant = message.role === 'assistant';
     const [copied, setCopied] = React.useState(false);
 
@@ -44,9 +44,23 @@ const MessageBubble = ({ message, isStreaming = false }) => {
                                     {copied ? (
                                         <><Check size={14} /> Copiado</>
                                     ) : (
-                                        <><Copy size={14} /> Copiar texto</>
+                                        <><Copy size={14} /> Copiar</>
                                     )}
                                 </button>
+
+                                {onBookmark && (
+                                    <button
+                                        className={`btn-bookmark-bubble ${isBookmarked ? 'active' : ''}`}
+                                        onClick={() => onBookmark(message)}
+                                        disabled={isBookmarked}
+                                    >
+                                        {isBookmarked ? (
+                                            <><BookmarkCheck size={14} /> Salvo</>
+                                        ) : (
+                                            <><Bookmark size={14} /> Salvar conselho</>
+                                        )}
+                                    </button>
+                                )}
                             </div>
                         )}
                     </div>

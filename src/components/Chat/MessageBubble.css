@@ -114,7 +114,8 @@
     opacity: 1;
 }
 
-.btn-copy-bubble {
+.btn-copy-bubble,
+.btn-bookmark-bubble {
     background: var(--bg-white);
     border: 1px solid var(--border-light);
     color: var(--text-gray);
@@ -124,15 +125,30 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    padding: 4px 10px;
+    padding: 6px 12px;
     border-radius: 99px;
-    transition: all 0.2s;
-    box-shadow: var(--shadow-sm);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .btn-copy-bubble:hover {
     color: var(--accent-blue-strong);
     border-color: var(--accent-blue-strong);
+    background: var(--bg-light);
+}
+
+.btn-bookmark-bubble:hover {
+    color: #d97706;
+    /* Gold/Amber strong */
+    border-color: #f59e0b;
+    background: #fffbeb;
+}
+
+.btn-bookmark-bubble.active {
+    background: #fef3c7;
+    border-color: #f59e0b;
+    color: #d97706;
+    cursor: default;
 }
 
 @keyframes fadeInMessage {

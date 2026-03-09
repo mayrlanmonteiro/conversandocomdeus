@@ -3,12 +3,13 @@ import { SYSTEM_PROMPT } from '../constants/systemPrompt';
 
 // Carrega a chave e o modelo das variáveis de ambiente
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const MODEL_NAME = import.meta.env.VITE_AI_MODEL || "gemini-1.5-flash-latest";
+const MODEL_NAME = import.meta.env.VITE_AI_MODEL || "gemini-1.5-flash";
 
 // Inicializa o SDK do Google
 if (!API_KEY) {
     console.error("VITE_GEMINI_API_KEY não encontrada no .env");
 }
+console.log("Model initialized:", MODEL_NAME);
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 /**
@@ -60,12 +61,12 @@ export async function sendMessageStream(messages, onChunk, onDone, onError) {
         console.error("Erro na API Gemini SDK:", err);
 
         // Tratamento amigável de erros comuns
-        let userFriendlyError = "Houve um problema ao conectar com o assistente.";
+        let userFriendlyError = `Erro da API: ${err.message}`;
 
         if (err.message?.includes("not found")) {
-            userFriendlyError = `O modelo '${MODEL_NAME}' não foi encontrado. Tente mudar para 'gemini-1.5-flash' no seu arquivo .env.`;
+            userFriendlyError = `Modelo '${MODEL_NAME}' não encontrado. Detalhe: ${err.message}`;
         } else if (err.message?.includes("API key")) {
-            userFriendlyError = "Sua API Key parece inválida ou não tem permissão.";
+            userFriendlyError = "Chave de API inválida ou sem permissão.";
         }
 
         onError(userFriendlyError);
