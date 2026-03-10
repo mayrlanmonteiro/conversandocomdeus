@@ -64,9 +64,11 @@ export default function Home() {
                 <canvas ref={canvasRef} className="split-canvas" aria-hidden="true" />
                 <div className="split-glow" aria-hidden="true" />
 
-                <div className="split-left-content">
+                <div className="split-logo-container">
                     <img src="/logo.png" alt="Conversando com Deus" className="split-logo" />
+                </div>
 
+                <div className="split-left-content">
                     <h1 className="split-title">
                         Um espaço seguro para conversar com Deus, estudar e receber direção.
                     </h1>

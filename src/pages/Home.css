@@ -20,7 +20,7 @@
     justify-content: center;
     padding: 32px 8% 32px 10%;
     background: radial-gradient(circle at 40% 50%, #050B1E 0%, #020817 100%);
-    overflow-y: auto;
+    overflow: hidden;
     height: 100vh;
 }
 
@@ -49,13 +49,21 @@
     max-width: 560px;
 }
 
+.split-logo-container {
+    position: absolute;
+    top: 48px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 10;
+}
+
 .split-logo {
     width: 100%;
-    max-width: 250px;
-    /* Width as requested for desktop */
+    max-width: 220px;
     height: auto;
     object-fit: contain;
-    margin-bottom: 24px;
     filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
 }
 
@@ -130,7 +138,7 @@
     padding: 32px 8%;
     position: relative;
     height: 100vh;
-    overflow-y: auto;
+    overflow: hidden;
 }
 
 /* Fix Login card overlapping layout natively assuming background gradient */
@@ -205,10 +213,14 @@
         align-items: center;
     }
 
+    .split-logo-container {
+        position: static;
+        margin-bottom: 24px;
+    }
+
     .split-logo {
         max-width: 180px;
         /* Smaller for mobile */
-        margin-bottom: 24px;
     }
 
     .split-title {
