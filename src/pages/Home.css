@@ -1,23 +1,24 @@
 .home-page {
     background-color: var(--bg-navy);
     position: relative;
-    scroll-snap-type: y mandatory;
-    scroll-padding-top: var(--header-height);
-    overflow-y: scroll;
-    height: 100vh;
+    min-height: 100vh;
+    /* Remover height: 100vh e scroll-snap ajudam na proporçao livre */
 }
 
-/* --- Hero Section --- */
+/* ==========================================================================
+   HERO SECTION (Desktop)
+   ========================================================================== */
 .hero {
     position: relative;
-    min-height: calc(100vh - 80px);
-    /* Consider header height */
+    min-height: 100vh;
+    /* Ocupa a tela inteira com espaço de respiro natural */
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
     background: radial-gradient(circle at 50% 50%, #050B1E 0%, #020817 100%);
-    padding: 0 24px;
+    padding: 120px 24px 80px;
+    overflow: hidden;
 }
 
 .hero-canvas {
@@ -44,14 +45,11 @@
     z-index: 2;
     text-align: center;
     width: 100%;
-    max-width: 1120px;
+    max-width: 1024px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding-top: 60px;
-    padding-bottom: 60px;
 }
 
 .hero-badge {
@@ -60,13 +58,13 @@
     background: rgba(244, 211, 106, 0.08);
     border: 1px solid rgba(244, 211, 106, 0.25);
     border-radius: 9999px;
-    margin-bottom: 24px;
+    margin-bottom: 32px;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
 }
 
 .badge-text {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     font-weight: 700;
     letter-spacing: 0.15em;
     text-transform: uppercase;
@@ -74,56 +72,50 @@
 }
 
 .hero-title-img {
-    margin: 0 auto 24px;
+    margin: 0 auto 32px;
     position: relative;
     z-index: 1;
     display: flex;
     justify-content: center;
-    align-items: center;
     width: 100%;
 }
 
 .hero-logo {
     width: 100%;
-    max-width: 320px;
-    /* Desktop */
+    max-width: 480px;
+    /* Tamanho majestoso para Desktop */
     height: auto;
     object-fit: contain;
-    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.15));
-    transition: all 0.3s ease;
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.1));
 }
 
 .hero-subtitle {
-    font-size: clamp(1rem, 2vw, 1.125rem);
-    /* ~16-18px for desktop */
+    font-size: 1.25rem;
     color: #D1D5DB;
-    max-width: 640px;
-    margin: 0 auto 40px;
-    line-height: 1.6;
-    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
-    position: relative;
+    max-width: 680px;
+    margin: 0 auto 48px;
+    line-height: 1.7;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     z-index: 5;
-    padding: 0 16px;
+    position: relative;
 }
 
 .hero-actions {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 24px;
     width: 100%;
-    position: relative;
     z-index: 6;
+    position: relative;
 }
 
 .hero-actions .btn {
-    min-height: 52px;
-    padding: 0 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.05rem;
+    min-height: 56px;
+    padding: 0 40px;
+    font-size: 1.1rem;
     font-weight: 600;
+    border-radius: 999px;
 }
 
 .delay-1 {
@@ -134,10 +126,10 @@
     animation-delay: 400ms;
 }
 
-/* --- Scroll Indicator --- */
+/* Scroll Indicator */
 .hero-scroll-indicator {
     position: absolute;
-    bottom: 40px;
+    bottom: 32px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
@@ -156,7 +148,7 @@
 
 .wheel {
     width: 2px;
-    height: 10px;
+    height: 8px;
     background: var(--primary-gold);
     border-radius: 1px;
     animation: scrollMove 2s infinite;
@@ -169,56 +161,69 @@
     }
 
     50% {
-        transform: translateY(10px);
+        transform: translateY(8px);
         opacity: 1;
     }
 
     100% {
-        transform: translateY(20px);
+        transform: translateY(16px);
         opacity: 0;
     }
 }
 
-/* --- Section Global --- */
+
+/* ==========================================================================
+   GLOBAL SECTION STYLES (Desktop)
+   ========================================================================== */
 .section-label {
     display: block;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 700;
     color: var(--accent-blue);
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 }
 
 .section-title {
-    font-size: clamp(2rem, 5vw, 2.5rem);
-    margin-bottom: 20px;
+    font-size: 2.75rem;
+    margin-bottom: 24px;
+    line-height: 1.2;
 }
 
 .section-desc {
     color: var(--text-secondary);
-    max-width: 600px;
-    margin: 0 auto 60px;
+    max-width: 640px;
+    margin: 0 auto 64px;
+    font-size: 1.1rem;
+    line-height: 1.6;
 }
 
-/* --- Steps Section --- */
+/* Sections Basic Padding */
+.steps-section,
+.features-section,
+.experience-section,
+.cta-section {
+    padding: 120px 0;
+    position: relative;
+}
+
+
+/* ==========================================================================
+   STEPS SECTION (Desktop)
+   ========================================================================== */
 .steps-section {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    padding: var(--space-3xl) 0;
     background: linear-gradient(180deg, var(--bg-navy) 0%, var(--bg-navy-light) 100%);
-    scroll-snap-align: start;
 }
 
 .steps-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 32px;
+    gap: 40px;
 }
 
 .step-card {
-    padding: 40px;
+    padding: 48px 40px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -241,100 +246,109 @@
 }
 
 .step-icon {
-    width: 56px;
-    height: 56px;
+    width: 64px;
+    height: 64px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border-color);
-    border-radius: 14px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--primary-gold);
-    margin-bottom: 24px;
+    margin-bottom: 32px;
+}
+
+.step-icon svg {
+    width: 28px;
+    height: 28px;
 }
 
 .step-number {
     position: absolute;
-    top: 20px;
+    top: 24px;
     right: 24px;
-    font-size: 2.5rem;
+    font-size: 4rem;
     font-weight: 800;
     color: rgba(255, 255, 255, 0.03);
     font-family: var(--font-sans);
+    line-height: 1;
 }
 
 .step-title {
-    font-size: 1.35rem;
-    margin-bottom: 12px;
+    font-size: 1.5rem;
+    margin-bottom: 16px;
     color: var(--text-primary);
 }
 
 .step-desc {
     color: var(--text-secondary);
-    font-size: 0.95rem;
+    font-size: 1.05rem;
+    line-height: 1.6;
 }
 
-/* --- Features Section --- */
+
+/* ==========================================================================
+   FEATURES SECTION (Desktop)
+   ========================================================================== */
 .features-section {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    padding: var(--space-3xl) 0;
     background: var(--bg-navy-light);
-    scroll-snap-align: start;
 }
 
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 32px;
 }
 
 .feature-card {
-    padding: 32px;
+    padding: 40px;
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
     transition: all 0.3s ease;
 }
 
 .feature-card:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(244, 211, 106, 0.2);
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(244, 211, 106, 0.3);
     box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
-    transform: translateY(-5px);
+    transform: translateY(-8px);
 }
 
 .feature-icon-wrapper {
-    width: 48px;
-    height: 48px;
+    width: 56px;
+    height: 56px;
     background: rgba(var(--accent-blue-rgb), 0.1);
-    border-radius: 12px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--accent-blue);
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+}
+
+.feature-icon-wrapper svg {
+    width: 24px;
+    height: 24px;
 }
 
 .feature-title {
-    font-size: 1.2rem;
-    margin-bottom: 12px;
+    font-size: 1.25rem;
+    margin-bottom: 16px;
 }
 
 .feature-desc {
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 1rem;
+    line-height: 1.6;
 }
 
-/* --- Experience Section --- */
+
+/* ==========================================================================
+   EXPERIENCE SECTION (Desktop)
+   ========================================================================== */
 .experience-section {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    padding: var(--space-3xl) 0;
     background: linear-gradient(to bottom, var(--bg-navy-light), var(--bg-navy));
-    scroll-snap-align: start;
 }
 
 .experience-grid {
@@ -346,26 +360,29 @@
 
 .experience-desc {
     color: var(--text-secondary);
-    margin-bottom: 32px;
-    font-size: 1.1rem;
+    margin-bottom: 40px;
+    font-size: 1.15rem;
+    line-height: 1.7;
 }
 
 .benefit-list {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .benefit-item {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
     color: var(--text-primary);
+    font-size: 1.05rem;
 }
 
 .benefit-icon {
     color: var(--primary-gold);
-    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
 }
 
 /* Visual Mockup Styling */
@@ -417,17 +434,18 @@
 }
 
 .mockup-content {
-    padding: 24px;
+    padding: 32px;
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
 .msg {
-    padding: 10px 14px;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    max-width: 80%;
+    padding: 14px 18px;
+    border-radius: 16px;
+    font-size: 0.95rem;
+    max-width: 85%;
+    line-height: 1.5;
 }
 
 .ia {
@@ -435,6 +453,7 @@
     border: 1px solid rgba(79, 178, 255, 0.15);
     align-self: flex-start;
     color: var(--accent-blue-light);
+    border-top-left-radius: 4px;
 }
 
 .user {
@@ -442,11 +461,12 @@
     border: 1px solid rgba(244, 211, 106, 0.15);
     align-self: flex-end;
     color: var(--primary-gold-light);
+    border-top-right-radius: 4px;
 }
 
 .msg-skeleton {
     height: 12px;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 6px;
     width: 60%;
 }
@@ -466,41 +486,30 @@
     z-index: 0;
 }
 
-/* --- CTA Section --- */
-.cta-section {
-    min-height: 100vh;
-    display: flex;
-    align-items: flex-end;
-    /* Aligns content to bottom if needed or center */
-    padding: var(--space-3xl) 0 var(--space-xl);
-    text-align: center;
-    scroll-snap-align: start;
-    position: relative;
-    overflow: hidden;
-}
 
-.cta-section .container {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: var(--space-2xl);
+/* ==========================================================================
+   CTA SECTION (Desktop)
+   ========================================================================== */
+.cta-section {
+    padding: 120px 0 60px;
+    text-align: center;
 }
 
 .cta-box {
-    padding: 60px 40px;
+    padding: 80px 40px;
     border-radius: 32px;
     position: relative;
     overflow: hidden;
-    width: 100%;
+    background: var(--bg-navy-light);
+    border: 1px solid rgba(244, 211, 106, 0.1);
 }
 
 .cta-box::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 100% 0%, rgba(244, 211, 106, 0.05), transparent 40%),
-        radial-gradient(circle at 0% 100%, rgba(79, 178, 255, 0.05), transparent 40%);
+    background: radial-gradient(circle at 100% 0%, rgba(244, 211, 106, 0.08), transparent 50%),
+        radial-gradient(circle at 0% 100%, rgba(79, 178, 255, 0.08), transparent 50%);
 }
 
 .cta-content {
@@ -509,39 +518,66 @@
 }
 
 .cta-title {
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-size: 3rem;
     margin-bottom: 32px;
 }
 
 .cta-verse {
-    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-size: 1.25rem;
     color: var(--text-secondary);
     font-style: italic;
     font-family: var(--font-serif);
-    max-width: 700px;
-    margin: 0 auto 40px;
-    line-height: 1.5;
+    max-width: 800px;
+    margin: 0 auto 48px;
+    line-height: 1.6;
 }
 
 .cta-footer-note {
-    margin-top: 24px;
-    font-size: 0.85rem;
+    margin-top: 32px;
+    font-size: 0.95rem;
     color: var(--text-muted);
 }
 
-/* --- Responsive --- */
+
+/* ==========================================================================
+   RESPONSIVE DESIGN (Desktop -> Tablet -> Mobile)
+   ========================================================================== */
+
+/* LARGE TABLETS & SMALL DESKTOPS */
 @media (max-width: 1024px) {
-    .experience-grid {
-        grid-template-columns: 1fr;
-        gap: 60px;
+    .hero-logo {
+        max-width: 380px;
     }
 
-    .experience-text {
+    .section-title {
+        font-size: 2.25rem;
+    }
+
+    .cta-title {
+        font-size: 2.5rem;
+    }
+
+    .steps-grid {
+        gap: 24px;
+    }
+
+    .step-card {
+        padding: 32px 24px;
+    }
+
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+
+    .experience-grid {
+        grid-template-columns: 1fr;
+        gap: 64px;
         text-align: center;
     }
 
     .experience-desc {
-        margin: 0 auto 32px;
+        margin: 0 auto 40px;
     }
 
     .benefit-item {
@@ -549,7 +585,58 @@
     }
 }
 
+/* TABLETS & LARGE MOBILE */
 @media (max-width: 768px) {
+
+    /* Sections padding reduce */
+    .hero,
+    .steps-section,
+    .features-section,
+    .experience-section,
+    .cta-section {
+        padding: 80px 16px;
+    }
+
+    .hero {
+        padding-top: 100px;
+        /* leave space for fixed header */
+        min-height: auto;
+        /* release from 100vh constraint */
+    }
+
+    .hero-badge {
+        padding: 6px 16px;
+        margin-bottom: 24px;
+    }
+
+    .badge-text {
+        font-size: 0.75rem;
+    }
+
+    .hero-logo {
+        max-width: 320px;
+    }
+
+    .hero-subtitle {
+        font-size: 1.05rem;
+        margin-bottom: 40px;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+        max-width: 400px;
+        min-height: 52px;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+
     .steps-grid {
         grid-template-columns: 1fr;
     }
@@ -558,53 +645,59 @@
         grid-template-columns: 1fr;
     }
 
-    .hero {
-        padding-top: 20px;
-        padding-bottom: 20px;
-        min-height: 100vh;
+    .cta-box {
+        padding: 48px 24px;
+        border-radius: 20px;
     }
 
-    .hero-content {
-        padding-top: 20px;
-        justify-content: flex-start;
-    }
-
-    .hero-logo {
-        max-width: 200px;
-        /* Tablet / Large Mobile */
-        margin-bottom: 16px;
-    }
-
-    .hero-subtitle {
-        font-size: clamp(0.875rem, 4vw, 1rem);
-        /* 14-16px */
-        margin-bottom: 32px;
-    }
-
-    .hero-actions {
-        flex-direction: column;
-        gap: 16px;
-        padding: 0 24px;
-    }
-
-    .hero-actions .btn {
-        width: 100%;
-        max-width: 380px;
-        margin: 0 auto;
+    .cta-title {
+        font-size: 2rem;
     }
 }
 
+/* SMALL MOBILE */
 @media (max-width: 480px) {
+    .hero {
+        padding-top: 80px;
+    }
+
     .hero-logo {
-        max-width: 160px;
-        /* Mobile */
+        max-width: 260px;
     }
 
-    .hero-badge {
-        margin-bottom: 24px;
+    .hero-subtitle {
+        font-size: 0.95rem;
     }
 
-    .hero-actions {
-        padding: 0 8px;
+    .section-title {
+        font-size: 1.75rem;
+    }
+
+    .cta-title {
+        font-size: 1.75rem;
+    }
+
+    .step-card {
+        padding: 24px 20px;
+    }
+
+    .step-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .step-number {
+        font-size: 3rem;
+        top: 16px;
+        right: 16px;
+    }
+
+    .feature-card {
+        padding: 24px 20px;
+    }
+
+    .msg {
+        font-size: 0.85rem;
+        padding: 12px 14px;
     }
 }
