@@ -57,13 +57,15 @@
 .split-logo-container {
     width: 100%;
     display: flex;
-    justify-content: flex-start;
-    margin-top: 1rem;
+    justify-content: center;
+    /* Center horizontally relative to column content limit */
+    margin-top: 2rem;
 }
 
 .split-logo {
     width: 100%;
-    max-width: 250px;
+    max-width: 280px;
+    /* Slightly larger matching new photo scale */
     height: auto;
     object-fit: contain;
     filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
