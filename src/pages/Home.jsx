@@ -1,48 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import Header from '../components/Layout/Header';
-import Footer from '../components/Layout/Footer';
-import { ArrowRight, BookOpen, Heart, MessageSquare, Calendar, PenTool, Sprout, Info, ShieldCheck } from 'lucide-react';
+import { BookOpen, Heart, MessageSquare } from 'lucide-react';
+import LoginForm from '../components/Auth/LoginForm';
 import './Home.css';
-
-const FEATURES = [
-    {
-        icon: <BookOpen className="feature-icon-svg" />,
-        title: 'Estudos Bíblicos',
-        desc: 'Para grupos pequenos ou estudo individual, com contexto e perguntas para reflexão.',
-    },
-    {
-        icon: <PenTool className="feature-icon-svg" />,
-        title: 'Pregações e Sermões',
-        desc: 'Esboços estruturados com base bíblica sólida, do título ao apelo final.',
-    },
-    {
-        icon: <Sprout className="feature-icon-svg" />,
-        title: 'Devocionais',
-        desc: 'Meditações diárias para nutrir sua espiritualidade em poucos minutos.',
-    },
-    {
-        icon: <Heart className="feature-icon-svg" />,
-        title: 'Conselhos Bíblicos',
-        desc: 'Apoio acolhedor para as situações difíceis da vida sob a luz das Escrituras.',
-    },
-    {
-        icon: <Calendar className="feature-icon-svg" />,
-        title: 'Planos de Leitura',
-        desc: 'Guia organizado para ler toda a Bíblia ou temas específicos sistematicamente.',
-    },
-    {
-        icon: <MessageSquare className="feature-icon-svg" />,
-        title: 'Orações-Modelo',
-        desc: 'Sugestões de oração inspiradoras para guiar seu momento de intercessão.',
-    },
-];
-
-const STEPS = [
-    { number: '01', title: 'Abra o chat', desc: 'Clique em "Começar Conversa" e entre no espaço de diálogo seguro e privativo.', icon: <MessageSquare size={24} /> },
-    { number: '02', title: 'Compartilhe seu coração', desc: 'Faça perguntas, peça um estudo ou compartilhe o que está sentindo no momento.', icon: <Heart size={24} /> },
-    { number: '03', title: 'Receba orientação', desc: 'O assistente responde com fundamentação bíblica, empatia e cuidado espiritual.', icon: <BookOpen size={24} /> },
-];
 
 export default function Home() {
     const canvasRef = useRef(null);
@@ -55,13 +14,15 @@ export default function Home() {
         const particles = [];
 
         const resize = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            // Se ajustar as dimensões pelo container, melhora o redimensionamento split screen.
+            const parent = canvas.parentElement;
+            canvas.width = parent.clientWidth;
+            canvas.height = parent.clientHeight;
         };
         resize();
         window.addEventListener('resize', resize);
 
-        for (let i = 0; i < 80; i++) {
+        for (let i = 0; i < 60; i++) {
             particles.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
@@ -97,175 +58,54 @@ export default function Home() {
     }, []);
 
     return (
-        <div className="home-page">
-            <Header />
+        <main className="split-home">
+            {/* INSPIRATION COLUMN (ESQUERDA) */}
+            <section className="split-left">
+                <canvas ref={canvasRef} className="split-canvas" aria-hidden="true" />
+                <div className="split-glow" aria-hidden="true" />
 
-            {/* HERO SECTION */}
-            <section className="hero" id="hero">
-                <canvas ref={canvasRef} className="hero-canvas" aria-hidden="true" />
-                <div className="hero-glow" aria-hidden="true" />
+                <div className="split-left-content">
+                    <img src="/logo.png" alt="Conversando com Deus" className="split-logo" />
 
-                <div className="hero-content container">
-                    <div className="animate-fade-in hero-badge">
-                        <span className="badge-text">Assistente Espiritual com IA</span>
-                    </div>
-
-                    <h1 className="hero-title-img animate-fade-in">
-                        <img src="/logo.png" alt="Conversando com Deus" className="hero-logo" />
+                    <h1 className="split-title">
+                        Um espaço seguro para conversar com Deus, estudar e receber direção.
                     </h1>
 
-                    <p className="hero-subtitle animate-fade-in delay-1">
-                        Um espaço de apoio espiritual e estudo bíblico. Faça perguntas,
-                        peça devocionais e receba orientações fundamentadas nas Escrituras —
-                        com a profundidade que sua fé merece.
+                    <p className="split-subtitle">
+                        Faça perguntas, peça devocionais e receba orientações fundamentadas nas Escrituras — com a profundidade que sua fé merece.
                     </p>
 
-                    <div className="hero-actions animate-fade-in delay-2">
-                        <Link to="/login" className="btn btn-primary btn-large btn-glow" id="btn-login-hero">
-                            🕊️ Entrar na Plataforma
-                        </Link>
-                        <a href="#como-funciona" className="btn btn-secondary btn-large" id="btn-how-it-works">
-                            Como funciona
-                        </a>
-                    </div>
-                </div>
+                    <ul className="split-benefits">
+                        <li>
+                            <div className="benefit-icon-wrapper">
+                                <BookOpen className="benefit-icon" />
+                            </div>
+                            <span>Devocionais e estudos bíblicos em instantes</span>
+                        </li>
+                        <li>
+                            <div className="benefit-icon-wrapper">
+                                <MessageSquare className="benefit-icon" />
+                            </div>
+                            <span>Conselhos com base nas Escrituras</span>
+                        </li>
+                        <li>
+                            <div className="benefit-icon-wrapper">
+                                <Heart className="benefit-icon" />
+                            </div>
+                            <span>Histórico das suas conversas em um só lugar</span>
+                        </li>
+                    </ul>
 
-                <div className="hero-scroll-indicator" aria-hidden="true">
-                    <div className="mouse">
-                        <div className="wheel"></div>
-                    </div>
+                    <blockquote className="split-verse">
+                        "Clama a mim, e eu te responderei, e te anunciarei coisas grandes e ocultas, que não sabes." <br />— Jeremias 33:3
+                    </blockquote>
                 </div>
             </section>
 
-            {/* COMO FUNCIONA */}
-            <section id="como-funciona" className="steps-section">
-                <div className="container">
-                    <div className="section-header text-center">
-                        <span className="section-label">O Processo</span>
-                        <h2 className="section-title">Simples como uma conversa</h2>
-                        <p className="section-desc">
-                            Inicie sua jornada espiritual em três etapas simples e intuitivas.
-                        </p>
-                    </div>
-
-                    <div className="steps-grid">
-                        {STEPS.map((step) => (
-                            <div className="step-card card" key={step.number}>
-                                <div className="step-icon">
-                                    {step.icon}
-                                </div>
-                                <div className="step-content">
-                                    <span className="step-number">{step.number}</span>
-                                    <h3 className="step-title">{step.title}</h3>
-                                    <p className="step-desc">{step.desc}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+            {/* LOGIN COLUMN (DIREITA) */}
+            <section className="split-right">
+                <LoginForm />
             </section>
-
-            {/* FUNCIONALIDADES */}
-            <section className="features-section">
-                <div className="container">
-                    <div className="section-header text-center">
-                        <span className="section-label">Capacidades da IA</span>
-                        <h2 className="section-title">Tudo o que você precisa<br />para crescer na fé</h2>
-                    </div>
-
-                    <div className="features-grid">
-                        {FEATURES.map((f) => (
-                            <div className="feature-card card" key={f.title}>
-                                <div className="feature-icon-wrapper">
-                                    {f.icon}
-                                </div>
-                                <h3 className="feature-title">{f.title}</h3>
-                                <p className="feature-desc">{f.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* EXPERIÊNCIA E BENEFÍCIOS */}
-            <section className="experience-section">
-                <div className="container">
-                    <div className="experience-grid">
-                        <div className="experience-text">
-                            <span className="section-label">A Nossa Base</span>
-                            <h2 className="section-title">Compromisso com a <br /><span className="text-gold">Palavra e com Você</span></h2>
-                            <p className="experience-desc">
-                                Nosso assistente foi desenvolvido sob uma perspectiva cristã evangélica,
-                                mas acolhe com profundo respeito e empatia pessoas de todas as crenças.
-                                O foco é oferecer um apoio equilibrado, seguro e fiel às Escrituras.
-                            </p>
-
-                            <div className="benefit-list">
-                                <div className="benefit-item">
-                                    <ShieldCheck className="benefit-icon" />
-                                    <span>Seguro e totalmente privativo</span>
-                                </div>
-                                <div className="benefit-item">
-                                    <Calendar className="benefit-icon" />
-                                    <span>Disponível 24 horas por dia</span>
-                                </div>
-                                <div className="benefit-item">
-                                    <Sprout className="benefit-icon" />
-                                    <span>Linguagem acessível e acolhedora</span>
-                                </div>
-                                <div className="benefit-item">
-                                    <Info className="benefit-icon" />
-                                    <span>Sem necessidade de cadastro antecipado</span>
-                                </div>
-                                <div className="benefit-item">
-                                    <BookOpen className="benefit-icon" />
-                                    <span>Ideal para líderes, pastores e membros</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="experience-visual">
-                            <div className="mockup-container">
-                                <div className="mockup-frame">
-                                    <div className="mockup-header">
-                                        <div className="dot red"></div>
-                                        <div className="dot yellow"></div>
-                                        <div className="dot green"></div>
-                                    </div>
-                                    <div className="mockup-content">
-                                        <div className="msg user">📖 Me ajude com um estudo sobre esperança...</div>
-                                        <div className="msg ia">Olá! Aqui está um esboço baseado em Romanos 15:13...</div>
-                                        <div className="msg user">Amém. Poderia me sugerir uma oração?</div>
-                                        <div className="msg-skeleton"></div>
-                                        <div className="msg-skeleton short"></div>
-                                    </div>
-                                </div>
-                                <div className="mockup-glow"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* CTA FINAL */}
-            <section className="cta-section">
-                <div className="container">
-                    <div className="cta-box card">
-                        <div className="cta-content">
-                            <h2 className="cta-title">Pronto para começar sua jornada?</h2>
-                            <blockquote className="cta-verse">
-                                "Clama a mim, e eu te responderei, e te anunciarei coisas grandes e ocultas, que não sabes." — Jeremias 33:3
-                            </blockquote>
-                            <div className="cta-actions">
-                                <Link to="/chat" className="btn btn-primary btn-large btn-glow" id="btn-start-chat-cta">
-                                    🕊️ Iniciar Conversa Agora
-                                </Link>
-                            </div>
-                            <p className="cta-footer-note">Gratuito · Privativo · Disponível 24h</p>
-                        </div>
-                    </div>
-                    <Footer />
-                </div>
-            </section>
-        </div>
+        </main>
     );
 }

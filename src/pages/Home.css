@@ -1,37 +1,40 @@
-.home-page {
-    background-color: var(--bg-navy);
-    position: relative;
-    min-height: 100vh;
-    /* Remover height: 100vh e scroll-snap ajudam na proporçao livre */
-}
+/* =====================================================
+   HOME: SPLIT SCREEN LOGIN LAYOUT
+   ===================================================== */
 
-/* ==========================================================================
-   HERO SECTION (Desktop)
-   ========================================================================== */
-.hero {
-    position: relative;
+.split-home {
+    display: grid;
+    grid-template-columns: 55% 45%;
     min-height: 100vh;
-    /* Ocupa a tela inteira com espaço de respiro natural */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: radial-gradient(circle at 50% 50%, #050B1E 0%, #020817 100%);
-    padding: 120px 24px 80px;
+    background-color: var(--bg-navy);
     overflow: hidden;
 }
 
-.hero-canvas {
+/* ==========================================================================
+   LEFT COLUMN: INSPIRATION
+   ========================================================================== */
+.split-left {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 8% 60px 10%;
+    background: radial-gradient(circle at 40% 50%, #050B1E 0%, #020817 100%);
+    overflow: hidden;
+    min-height: 100vh;
+}
+
+.split-canvas {
     position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 1;
 }
 
-.hero-glow {
+.split-glow {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 30%;
+    left: 40%;
     transform: translate(-50%, -50%);
     width: 60%;
     height: 60%;
@@ -40,677 +43,211 @@
     pointer-events: none;
 }
 
-.hero-content {
+.split-left-content {
     position: relative;
     z-index: 2;
-    text-align: center;
+    max-width: 560px;
+}
+
+.split-logo {
     width: 100%;
-    max-width: 1024px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.hero-badge {
-    display: inline-flex;
-    padding: 8px 24px;
-    background: rgba(244, 211, 106, 0.08);
-    border: 1px solid rgba(244, 211, 106, 0.25);
-    border-radius: 9999px;
-    margin-bottom: 16px;
-    /* Reduced margin */
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-}
-
-.badge-text {
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--primary-gold);
-}
-
-.hero-title-img {
-    margin: 0 auto 16px;
-    /* Reduced margin to bring closer to text */
-    position: relative;
-    z-index: 1;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-.hero-logo {
-    width: 100%;
-    max-width: 320px;
-    /* Reduzido para ficar totalmente visível */
+    max-width: 250px;
+    /* Width as requested for desktop */
     height: auto;
     object-fit: contain;
-    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.1));
-}
-
-.hero-subtitle {
-    font-size: 1.15rem;
-    /* Letter-style typography */
-    color: #D1D5DB;
-    max-width: 720px;
-    /* Wider for comfortable reading like a letter */
-    margin: 0 auto 32px;
-    /* Closer to actions */
-    line-height: 1.8;
-    /* Generous line height for reading */
-    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    z-index: 5;
-    position: relative;
-}
-
-.hero-actions {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
-    width: 100%;
-    z-index: 6;
-    position: relative;
-}
-
-.hero-actions .btn {
-    min-height: 56px;
-    padding: 0 40px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    border-radius: 999px;
-}
-
-.delay-1 {
-    animation-delay: 200ms;
-}
-
-.delay-2 {
-    animation-delay: 400ms;
-}
-
-/* Scroll Indicator */
-.hero-scroll-indicator {
-    position: absolute;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-    opacity: 0.6;
-}
-
-.mouse {
-    width: 24px;
-    height: 40px;
-    border: 2px solid var(--text-muted);
-    border-radius: 20px;
-    display: flex;
-    justify-content: center;
-    padding-top: 8px;
-}
-
-.wheel {
-    width: 2px;
-    height: 8px;
-    background: var(--primary-gold);
-    border-radius: 1px;
-    animation: scrollMove 2s infinite;
-}
-
-@keyframes scrollMove {
-    0% {
-        transform: translateY(0);
-        opacity: 0;
-    }
-
-    50% {
-        transform: translateY(8px);
-        opacity: 1;
-    }
-
-    100% {
-        transform: translateY(16px);
-        opacity: 0;
-    }
-}
-
-
-/* ==========================================================================
-   GLOBAL SECTION STYLES (Desktop)
-   ========================================================================== */
-.section-label {
-    display: block;
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: var(--accent-blue);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin-bottom: 16px;
-}
-
-.section-title {
-    font-size: 2.75rem;
-    margin-bottom: 24px;
-    line-height: 1.2;
-}
-
-.section-desc {
-    color: var(--text-secondary);
-    max-width: 640px;
-    margin: 0 auto 64px;
-    font-size: 1.1rem;
-    line-height: 1.6;
-}
-
-/* Sections Basic Padding */
-.steps-section,
-.features-section,
-.experience-section,
-.cta-section {
-    padding: 120px 0;
-    position: relative;
-}
-
-
-/* ==========================================================================
-   STEPS SECTION (Desktop)
-   ========================================================================== */
-.steps-section {
-    background: linear-gradient(180deg, var(--bg-navy) 0%, var(--bg-navy-light) 100%);
-}
-
-.steps-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 40px;
-}
-
-.step-card {
-    padding: 48px 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
-    height: 100%;
-    border-radius: 24px;
-    position: relative;
-    overflow: hidden;
-}
-
-.step-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(to right, var(--primary-gold), transparent);
-    opacity: 0.5;
-}
-
-.step-icon {
-    width: 64px;
-    height: 64px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--primary-gold);
-    margin-bottom: 32px;
-}
-
-.step-icon svg {
-    width: 28px;
-    height: 28px;
-}
-
-.step-number {
-    position: absolute;
-    top: 24px;
-    right: 24px;
-    font-size: 4rem;
-    font-weight: 800;
-    color: rgba(255, 255, 255, 0.03);
-    font-family: var(--font-sans);
-    line-height: 1;
-}
-
-.step-title {
-    font-size: 1.5rem;
-    margin-bottom: 16px;
-    color: var(--text-primary);
-}
-
-.step-desc {
-    color: var(--text-secondary);
-    font-size: 1.05rem;
-    line-height: 1.6;
-}
-
-
-/* ==========================================================================
-   FEATURES SECTION (Desktop)
-   ========================================================================== */
-.features-section {
-    background: var(--bg-navy-light);
-}
-
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 32px;
-}
-
-.feature-card {
-    padding: 40px;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: all 0.3s ease;
-}
-
-.feature-card:hover {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(244, 211, 106, 0.3);
-    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
-    transform: translateY(-8px);
-}
-
-.feature-icon-wrapper {
-    width: 56px;
-    height: 56px;
-    background: rgba(var(--accent-blue-rgb), 0.1);
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--accent-blue);
-    margin-bottom: 24px;
-}
-
-.feature-icon-wrapper svg {
-    width: 24px;
-    height: 24px;
-}
-
-.feature-title {
-    font-size: 1.25rem;
-    margin-bottom: 16px;
-}
-
-.feature-desc {
-    color: var(--text-secondary);
-    font-size: 1rem;
-    line-height: 1.6;
-}
-
-
-/* ==========================================================================
-   EXPERIENCE SECTION (Desktop)
-   ========================================================================== */
-.experience-section {
-    background: linear-gradient(to bottom, var(--bg-navy-light), var(--bg-navy));
-}
-
-.experience-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-}
-
-.experience-desc {
-    color: var(--text-secondary);
     margin-bottom: 40px;
-    font-size: 1.15rem;
-    line-height: 1.7;
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
 }
 
-.benefit-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.benefit-item {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+.split-title {
+    font-size: clamp(1.8rem, 2.6vw, 2.5rem);
     color: var(--text-primary);
-    font-size: 1.05rem;
+    line-height: 1.25;
+    margin-bottom: 24px;
+    font-weight: 700;
 }
 
-.benefit-icon {
-    color: var(--primary-gold);
-    width: 24px;
-    height: 24px;
+.split-subtitle {
+    font-size: 1.1rem;
+    color: #D1D5DB;
+    line-height: 1.6;
+    margin-bottom: 40px;
+    max-width: 480px;
 }
 
-/* Visual Mockup Styling */
-.experience-visual {
-    padding: 20px;
-}
-
-.mockup-container {
-    position: relative;
-}
-
-.mockup-frame {
-    background: #081025;
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.8);
-    position: relative;
-    z-index: 1;
-}
-
-.mockup-header {
-    height: 36px;
-    background: rgba(255, 255, 255, 0.03);
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    padding: 0 16px;
-    gap: 8px;
-}
-
-.dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    opacity: 0.5;
-}
-
-.red {
-    background: #ff5f57;
-}
-
-.yellow {
-    background: #febc2e;
-}
-
-.green {
-    background: #28c840;
-}
-
-.mockup-content {
-    padding: 32px;
+.split-benefits {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    margin-bottom: 60px;
 }
 
-.msg {
-    padding: 14px 18px;
-    border-radius: 16px;
-    font-size: 0.95rem;
-    max-width: 85%;
-    line-height: 1.5;
+.split-benefits li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 500;
 }
 
-.ia {
-    background: rgba(79, 178, 255, 0.1);
-    border: 1px solid rgba(79, 178, 255, 0.15);
-    align-self: flex-start;
-    color: var(--accent-blue-light);
-    border-top-left-radius: 4px;
-}
-
-.user {
+.benefit-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
     background: rgba(244, 211, 106, 0.1);
-    border: 1px solid rgba(244, 211, 106, 0.15);
-    align-self: flex-end;
-    color: var(--primary-gold-light);
-    border-top-right-radius: 4px;
+    border-radius: 8px;
+    flex-shrink: 0;
 }
 
-.msg-skeleton {
-    height: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
-    width: 60%;
+.split-benefits .benefit-icon {
+    color: var(--primary-gold);
+    width: 18px;
+    height: 18px;
 }
 
-.msg-skeleton.short {
-    width: 30%;
-}
-
-.mockup-glow {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 120%;
-    height: 120%;
-    background: radial-gradient(circle, rgba(244, 211, 106, 0.05) 0%, transparent 70%);
-    z-index: 0;
-}
-
-
-/* ==========================================================================
-   CTA SECTION (Desktop)
-   ========================================================================== */
-.cta-section {
-    padding: 120px 0 60px;
-    text-align: center;
-}
-
-.cta-box {
-    padding: 80px 40px;
-    border-radius: 32px;
-    position: relative;
-    overflow: hidden;
-    background: var(--bg-navy-light);
-    border: 1px solid rgba(244, 211, 106, 0.1);
-}
-
-.cta-box::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 100% 0%, rgba(244, 211, 106, 0.08), transparent 50%),
-        radial-gradient(circle at 0% 100%, rgba(79, 178, 255, 0.08), transparent 50%);
-}
-
-.cta-content {
-    position: relative;
-    z-index: 1;
-}
-
-.cta-title {
-    font-size: 3rem;
-    margin-bottom: 32px;
-}
-
-.cta-verse {
-    font-size: 1.25rem;
+.split-verse {
+    font-size: 0.95rem;
     color: var(--text-secondary);
     font-style: italic;
     font-family: var(--font-serif);
-    max-width: 800px;
-    margin: 0 auto 48px;
+    opacity: 0.8;
     line-height: 1.6;
+    border-left: 2px solid rgba(255, 255, 255, 0.1);
+    padding-left: 16px;
 }
-
-.cta-footer-note {
-    margin-top: 32px;
-    font-size: 0.95rem;
-    color: var(--text-muted);
-}
-
 
 /* ==========================================================================
-   RESPONSIVE DESIGN (Desktop -> Tablet -> Mobile)
+   RIGHT COLUMN: LOGIN FORM
+   ========================================================================== */
+.split-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #EEF2FF 0%, #F9FAFB 100%);
+    padding: 40px 8%;
+    position: relative;
+}
+
+/* Fix Login card overlapping layout natively assuming background gradient */
+.split-right::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(244, 211, 106, 0.08) 0%, transparent 70%);
+    filter: blur(60px);
+    pointer-events: none;
+}
+
+/* Apply minor override to login-card to fit properly natively */
+.split-right .login-card {
+    margin: 0;
+    width: 100%;
+    max-width: 420px;
+}
+
+/* ==========================================================================
+   RESPONSIVE LAYOUT (Split Screen)
    ========================================================================== */
 
-/* LARGE TABLETS & SMALL DESKTOPS */
+/* TABLETS PRO && SMALL DESKTOP */
 @media (max-width: 1024px) {
-    .hero-logo {
-        max-width: 280px;
-        /* Resized for tablet */
+    .split-home {
+        grid-template-columns: 50% 50%;
+        /* Equal split */
     }
 
-    .section-title {
-        font-size: 2.25rem;
+    .split-left {
+        padding: 40px 6%;
     }
 
-    .cta-title {
-        font-size: 2.5rem;
+    .split-logo {
+        max-width: 220px;
     }
 
-    .steps-grid {
-        gap: 24px;
+    .split-title {
+        font-size: 2.2rem;
     }
 
-    .step-card {
-        padding: 32px 24px;
-    }
-
-    .features-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-    }
-
-    .experience-grid {
-        grid-template-columns: 1fr;
-        gap: 64px;
-        text-align: center;
-    }
-
-    .experience-desc {
-        margin: 0 auto 40px;
-    }
-
-    .benefit-item {
-        justify-content: center;
+    .split-right {
+        padding: 40px 6%;
     }
 }
 
-/* TABLETS & LARGE MOBILE */
+/* TABLETS (Portrait) & MOBILE */
 @media (max-width: 768px) {
-
-    /* Sections padding reduce */
-    .hero,
-    .steps-section,
-    .features-section,
-    .experience-section,
-    .cta-section {
-        padding: 80px 16px;
+    .split-home {
+        grid-template-columns: 1fr;
+        /* Single column */
+        overflow-y: auto;
+        /* Re-enable scroll */
+        height: auto;
     }
 
-    .hero {
-        padding-top: 100px;
-        /* leave space for fixed header */
+    .split-left {
         min-height: auto;
-        /* release from 100vh constraint */
+        padding: 60px 24px 40px;
+        align-items: center;
+        text-align: center;
+        background: radial-gradient(circle at 50% 10%, #050B1E 0%, #020817 100%);
     }
 
-    .hero-badge {
-        padding: 6px 16px;
-        margin-bottom: 16px;
-    }
-
-    .badge-text {
-        font-size: 0.75rem;
-    }
-
-    .hero-logo {
-        max-width: 240px;
-        /* Reduced for tablet/mobile */
-    }
-
-    .hero-subtitle {
-        font-size: 1.05rem;
-        margin-bottom: 24px;
-        line-height: 1.6;
-    }
-
-    .hero-actions {
+    .split-left-content {
+        display: flex;
         flex-direction: column;
-        gap: 16px;
+        align-items: center;
     }
 
-    .hero-actions .btn {
-        width: 100%;
-        max-width: 400px;
-        min-height: 52px;
+    .split-logo {
+        max-width: 180px;
+        /* Smaller for mobile */
+        margin-bottom: 24px;
     }
 
-    .section-title {
-        font-size: 2rem;
+    .split-title {
+        font-size: 1.8rem;
     }
 
-    .steps-grid {
-        grid-template-columns: 1fr;
+    .split-verse {
+        border-left: none;
+        padding-left: 0;
     }
 
-    .features-grid {
-        grid-template-columns: 1fr;
+    .split-benefits li {
+        justify-content: flex-start;
+        text-align: left;
     }
 
-    .cta-box {
-        padding: 48px 24px;
-        border-radius: 20px;
-    }
-
-    .cta-title {
-        font-size: 2rem;
+    .split-right {
+        padding: 40px 24px;
+        min-height: 50vh;
     }
 }
 
 /* SMALL MOBILE */
 @media (max-width: 480px) {
-    .hero {
-        padding-top: 80px;
+    .split-left {
+        padding: 40px 16px 32px;
     }
 
-    .hero-logo {
-        max-width: 200px;
+    .split-logo {
+        max-width: 160px;
     }
 
-    .hero-badge {
-        margin-bottom: 16px;
+    .split-title {
+        font-size: 1.6rem;
     }
 
-    .hero-subtitle {
-        font-size: 0.95rem;
+    .split-right {
+        padding: 32px 16px;
     }
 
-    .section-title {
-        font-size: 1.75rem;
-    }
-
-    .cta-title {
-        font-size: 1.75rem;
-    }
-
-    .step-card {
-        padding: 24px 20px;
-    }
-
-    .step-icon {
-        width: 48px;
-        height: 48px;
-    }
-
-    .step-number {
-        font-size: 3rem;
-        top: 16px;
-        right: 16px;
-    }
-
-    .feature-card {
-        padding: 24px 20px;
-    }
-
-    .msg {
-        font-size: 0.85rem;
-        padding: 12px 14px;
+    .split-right .login-card {
+        padding: 32px 24px;
     }
 }
