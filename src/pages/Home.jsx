@@ -97,7 +97,9 @@ export default function Home() {
                             <span>Histórico das suas conversas em um só lugar</span>
                         </li>
                     </ul>
+                </div>
 
+                <div className="split-footer-verse">
                     <blockquote className="split-verse">
                         "Clama a mim, e eu te responderei, e te anunciarei coisas grandes e ocultas, que não sabes." <br />— Jeremias 33:3
                     </blockquote>

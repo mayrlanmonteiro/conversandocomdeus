@@ -8,6 +8,7 @@
     height: 100vh;
     background-color: var(--bg-navy);
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 /* ==========================================================================
@@ -17,11 +18,13 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding: 32px 8% 32px 10%;
+    justify-content: flex-start;
+    /* Start from top logically */
+    padding: 40px 8% 32px 10%;
     background: radial-gradient(circle at 40% 50%, #050B1E 0%, #020817 100%);
     overflow: hidden;
     height: 100vh;
+    box-sizing: border-box;
 }
 
 .split-canvas {
@@ -47,12 +50,12 @@
     position: relative;
     z-index: 2;
     max-width: 560px;
+    margin: auto 0;
+    /* Consumes remaining space to perfectly center between logo and verse */
 }
 
 .split-logo-container {
-    position: absolute;
-    top: 48px;
-    left: 0;
+    position: relative;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -127,6 +130,11 @@
     padding-left: 16px;
 }
 
+.split-footer-verse {
+    position: relative;
+    z-index: 2;
+}
+
 /* ==========================================================================
    RIGHT COLUMN: LOGIN FORM
    ========================================================================== */
@@ -139,6 +147,7 @@
     position: relative;
     height: 100vh;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 /* Fix Login card overlapping layout natively assuming background gradient */
