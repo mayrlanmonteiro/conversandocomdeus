@@ -32,7 +32,8 @@
     flex-direction: column;
     justify-content: center;
     /* Centralizar verticalmente (sem empurrar) */
-    padding: 3rem 4rem;
+    padding: 2.5rem 4rem;
+    /* Reduzido padding superior/inferior para caber em telas curtas */
     background: radial-gradient(circle at 40% 50%, #050B1E 0%, #020817 100%);
     overflow: hidden;
 }
@@ -69,7 +70,7 @@
 }
 
 .split-logo-container {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     /* Aproximar logo do título */
     display: flex;
     justify-content: flex-start;
@@ -77,26 +78,26 @@
 
 .split-logo {
     width: 100%;
-    max-width: 250px;
-    /* Restored proportional size */
+    max-width: 220px;
     height: auto;
     object-fit: contain;
     filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
 }
 
 .split-title {
-    font-size: clamp(2rem, 2.5vw, 2.8rem);
+    font-size: clamp(1.8rem, 2.5vw, 2.6rem);
+    /* Redução sutil limite máximo */
     color: var(--text-primary);
-    line-height: 1.2;
+    line-height: 1.25;
     margin-bottom: 1rem;
     font-weight: 700;
 }
 
 .split-subtitle {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: #D1D5DB;
-    line-height: 1.6;
-    margin-bottom: 2rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
 }
 
 .split-benefits {
@@ -104,7 +105,7 @@
     flex-direction: column;
     gap: 12px;
     /* Spacing compact */
-    margin-bottom: 2.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .split-benefits li {
