@@ -14,7 +14,6 @@ export default function Home() {
         const particles = [];
 
         const resize = () => {
-            // Se ajustar as dimensões pelo container, melhora o redimensionamento split screen.
             const parent = canvas.parentElement;
             canvas.width = parent.clientWidth;
             canvas.height = parent.clientHeight;
@@ -59,17 +58,17 @@ export default function Home() {
 
     return (
         <main className="split-home">
-            <div className="split-home-container">
-                {/* INSPIRATION COLUMN (ESQUERDA) */}
-                <section className="split-left">
-                    <canvas ref={canvasRef} className="split-canvas" aria-hidden="true" />
-                    <div className="split-glow" aria-hidden="true" />
+            {/* INSPIRATION COLUMN (ESQUERDA) */}
+            <section className="split-left">
+                <canvas ref={canvasRef} className="split-canvas" aria-hidden="true" />
+                <div className="split-glow" aria-hidden="true" />
+
+                <div className="split-left-wrapper">
+                    <div className="split-logo-container">
+                        <img src="/logo.png" alt="Conversando com Deus" className="split-logo" />
+                    </div>
 
                     <div className="split-left-content">
-                        <div className="split-logo-container">
-                            <img src="/logo.png" alt="Conversando com Deus" className="split-logo" />
-                        </div>
-
                         <h1 className="split-title">
                             Um espaço seguro para conversar com Deus, estudar e receber direção.
                         </h1>
@@ -105,13 +104,13 @@ export default function Home() {
                             "Clama a mim, e eu te responderei, e te anunciarei coisas grandes e ocultas, que não sabes." <br />— Jeremias 33:3
                         </blockquote>
                     </div>
-                </section>
+                </div>
+            </section>
 
-                {/* LOGIN COLUMN (DIREITA) */}
-                <section className="split-right">
-                    <LoginForm />
-                </section>
-            </div>
+            {/* LOGIN COLUMN (DIREITA) */}
+            <section className="split-right">
+                <LoginForm />
+            </section>
         </main>
     );
 }
