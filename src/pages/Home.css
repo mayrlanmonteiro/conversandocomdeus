@@ -3,12 +3,24 @@
    ===================================================== */
 
 .split-home {
+    background-color: #020817;
+    /* Base dark background for extra-wide screens */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.split-home-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
     display: grid;
     grid-template-columns: 55% 45%;
-    height: 100vh;
-    background-color: var(--bg-navy);
-    overflow: hidden;
-    box-sizing: border-box;
+    min-height: 100vh;
+    /* Centralizar verticalmente com min-height 100vh */
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    /* Sutil premium shadow em telas largas */
 }
 
 /* ==========================================================================
@@ -18,15 +30,11 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    /* Perfect distribution of top/middle/bottom */
-    padding: 32px 8% 32px 10%;
-    /* Minimal vertical padding */
+    justify-content: center;
+    /* Centralizar verticalmente (sem empurrar) */
+    padding: 3rem 4rem;
     background: radial-gradient(circle at 40% 50%, #050B1E 0%, #020817 100%);
     overflow-y: auto;
-    /* Fallback for very small screens so they can still read */
-    height: 100vh;
-    box-sizing: border-box;
 }
 
 .split-canvas {
@@ -51,49 +59,51 @@
 .split-left-content {
     position: relative;
     z-index: 2;
+    width: 100%;
     max-width: 560px;
-    margin: 16px 0;
-    /* Let space-between handle the macro spacing */
+    /* Limitar largura máxima do texto ~560px */
+    margin: 0 auto;
+    /* Centralizado sutilmente dentro dos 55% */
+    display: flex;
+    flex-direction: column;
 }
 
 .split-logo-container {
-    position: relative;
-    width: 100%;
+    margin-bottom: 2rem;
+    /* Aproximar logo do título */
     display: flex;
-    justify-content: center;
-    z-index: 10;
+    justify-content: flex-start;
 }
 
 .split-logo {
     width: 100%;
     max-width: 180px;
-    /* Reduced further to ensure text fits without scrolling */
     height: auto;
     object-fit: contain;
     filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
 }
 
 .split-title {
-    font-size: clamp(1.6rem, 2.2vw, 2.2rem);
+    font-size: clamp(2rem, 2.5vw, 2.8rem);
     color: var(--text-primary);
-    line-height: 1.25;
-    margin-bottom: 16px;
+    line-height: 1.2;
+    margin-bottom: 1rem;
     font-weight: 700;
 }
 
 .split-subtitle {
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: #D1D5DB;
-    line-height: 1.5;
-    margin-bottom: 24px;
-    max-width: 480px;
+    line-height: 1.6;
+    margin-bottom: 2rem;
 }
 
 .split-benefits {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 24px;
+    gap: 12px;
+    /* Spacing compact */
+    margin-bottom: 2.5rem;
 }
 
 .split-benefits li {
@@ -122,6 +132,17 @@
     height: 18px;
 }
 
+.split-footer-verse {
+    position: relative;
+    z-index: 2;
+    margin-top: auto;
+    /* Empurra para baixo preenchendo o espaco se sobrar vertical*/
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
 .split-verse {
     font-size: 0.9rem;
     color: var(--text-secondary);
@@ -131,11 +152,7 @@
     line-height: 1.5;
     border-left: 2px solid rgba(255, 255, 255, 0.1);
     padding-left: 16px;
-}
-
-.split-footer-verse {
-    position: relative;
-    z-index: 2;
+    margin-top: 1rem;
 }
 
 /* ==========================================================================
@@ -146,11 +163,9 @@
     align-items: center;
     justify-content: center;
     background: linear-gradient(135deg, #EEF2FF 0%, #F9FAFB 100%);
-    padding: 32px 8%;
+    padding: 2rem 10%;
     position: relative;
-    height: 100vh;
-    overflow: hidden;
-    box-sizing: border-box;
+    overflow-y: auto;
 }
 
 /* Fix Login card overlapping layout natively assuming background gradient */
@@ -166,11 +181,12 @@
     pointer-events: none;
 }
 
-/* Apply minor override to login-card to fit properly natively */
 .split-right .login-card {
     margin: 0;
     width: 100%;
     max-width: 420px;
+    position: relative;
+    z-index: 2;
 }
 
 /* ==========================================================================
@@ -179,69 +195,46 @@
 
 /* TABLETS PRO && SMALL DESKTOP */
 @media (max-width: 1024px) {
-    .split-home {
+    .split-home-container {
         grid-template-columns: 50% 50%;
         /* Equal split */
     }
 
     .split-left {
-        padding: 40px 6%;
-    }
-
-    .split-logo {
-        max-width: 220px;
+        padding: 3rem 2rem;
     }
 
     .split-title {
-        font-size: 2.2rem;
+        font-size: clamp(1.8rem, 2vw, 2.2rem);
     }
 
     .split-right {
-        padding: 40px 6%;
+        padding: 2rem 5%;
     }
 }
 
 /* TABLETS (Portrait) & MOBILE */
 @media (max-width: 768px) {
-    .split-home {
+    .split-home-container {
         grid-template-columns: 1fr;
         /* Single column */
-        overflow-y: auto;
-        /* Re-enable scroll */
-        height: auto;
+        min-height: auto;
     }
 
     .split-left {
-        min-height: auto;
-        padding: 60px 24px 40px;
-        align-items: center;
-        text-align: center;
+        padding: 4rem 1.5rem;
         background: radial-gradient(circle at 50% 10%, #050B1E 0%, #020817 100%);
-    }
-
-    .split-left-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        min-height: auto;
+        text-align: center;
     }
 
     .split-logo-container {
-        position: static;
-        margin-bottom: 24px;
-    }
-
-    .split-logo {
-        max-width: 180px;
-        /* Smaller for mobile */
+        justify-content: center;
+        margin-bottom: 1.5rem;
     }
 
     .split-title {
-        font-size: 1.8rem;
-    }
-
-    .split-verse {
-        border-left: none;
-        padding-left: 0;
+        font-size: clamp(1.8rem, 5vw, 2.2rem);
     }
 
     .split-benefits li {
@@ -249,8 +242,18 @@
         text-align: left;
     }
 
+    .split-footer-verse {
+        margin-top: 2rem;
+    }
+
+    .split-verse {
+        border-left: none;
+        padding-left: 0;
+        text-align: center;
+    }
+
     .split-right {
-        padding: 40px 24px;
+        padding: 3rem 1.5rem;
         min-height: 50vh;
     }
 }
@@ -258,22 +261,18 @@
 /* SMALL MOBILE */
 @media (max-width: 480px) {
     .split-left {
-        padding: 40px 16px 32px;
+        padding: 3rem 1rem;
     }
 
     .split-logo {
-        max-width: 160px;
+        max-width: 150px;
     }
 
     .split-title {
-        font-size: 1.6rem;
+        font-size: clamp(1.6rem, 6vw, 1.8rem);
     }
 
     .split-right {
-        padding: 32px 16px;
-    }
-
-    .split-right .login-card {
-        padding: 32px 24px;
+        padding: 2.5rem 1rem;
     }
 }

@@ -59,57 +59,59 @@ export default function Home() {
 
     return (
         <main className="split-home">
-            {/* INSPIRATION COLUMN (ESQUERDA) */}
-            <section className="split-left">
-                <canvas ref={canvasRef} className="split-canvas" aria-hidden="true" />
-                <div className="split-glow" aria-hidden="true" />
+            <div className="split-home-container">
+                {/* INSPIRATION COLUMN (ESQUERDA) */}
+                <section className="split-left">
+                    <canvas ref={canvasRef} className="split-canvas" aria-hidden="true" />
+                    <div className="split-glow" aria-hidden="true" />
 
-                <div className="split-logo-container">
-                    <img src="/logo.png" alt="Conversando com Deus" className="split-logo" />
-                </div>
+                    <div className="split-logo-container">
+                        <img src="/logo.png" alt="Conversando com Deus" className="split-logo" />
+                    </div>
 
-                <div className="split-left-content">
-                    <h1 className="split-title">
-                        Um espaço seguro para conversar com Deus, estudar e receber direção.
-                    </h1>
+                    <div className="split-left-content">
+                        <h1 className="split-title">
+                            Um espaço seguro para conversar com Deus, estudar e receber direção.
+                        </h1>
 
-                    <p className="split-subtitle">
-                        Faça perguntas, peça devocionais e receba orientações fundamentadas nas Escrituras — com a profundidade que sua fé merece.
-                    </p>
+                        <p className="split-subtitle">
+                            Faça perguntas, peça devocionais e receba orientações fundamentadas nas Escrituras — com a profundidade que sua fé merece.
+                        </p>
 
-                    <ul className="split-benefits">
-                        <li>
-                            <div className="benefit-icon-wrapper">
-                                <BookOpen className="benefit-icon" />
-                            </div>
-                            <span>Devocionais e estudos bíblicos em instantes</span>
-                        </li>
-                        <li>
-                            <div className="benefit-icon-wrapper">
-                                <MessageSquare className="benefit-icon" />
-                            </div>
-                            <span>Conselhos com base nas Escrituras</span>
-                        </li>
-                        <li>
-                            <div className="benefit-icon-wrapper">
-                                <Heart className="benefit-icon" />
-                            </div>
-                            <span>Histórico das suas conversas em um só lugar</span>
-                        </li>
-                    </ul>
-                </div>
+                        <ul className="split-benefits">
+                            <li>
+                                <div className="benefit-icon-wrapper">
+                                    <BookOpen className="benefit-icon" />
+                                </div>
+                                <span>Devocionais e estudos bíblicos em instantes</span>
+                            </li>
+                            <li>
+                                <div className="benefit-icon-wrapper">
+                                    <MessageSquare className="benefit-icon" />
+                                </div>
+                                <span>Conselhos com base nas Escrituras</span>
+                            </li>
+                            <li>
+                                <div className="benefit-icon-wrapper">
+                                    <Heart className="benefit-icon" />
+                                </div>
+                                <span>Histórico das suas conversas em um só lugar</span>
+                            </li>
+                        </ul>
+                    </div>
 
-                <div className="split-footer-verse">
-                    <blockquote className="split-verse">
-                        "Clama a mim, e eu te responderei, e te anunciarei coisas grandes e ocultas, que não sabes." <br />— Jeremias 33:3
-                    </blockquote>
-                </div>
-            </section>
+                    <div className="split-footer-verse">
+                        <blockquote className="split-verse">
+                            "Clama a mim, e eu te responderei, e te anunciarei coisas grandes e ocultas, que não sabes." <br />— Jeremias 33:3
+                        </blockquote>
+                    </div>
+                </section>
 
-            {/* LOGIN COLUMN (DIREITA) */}
-            <section className="split-right">
-                <LoginForm />
-            </section>
+                {/* LOGIN COLUMN (DIREITA) */}
+                <section className="split-right">
+                    <LoginForm />
+                </section>
+            </div>
         </main>
     );
 }
