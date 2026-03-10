@@ -58,7 +58,8 @@
     background: rgba(244, 211, 106, 0.08);
     border: 1px solid rgba(244, 211, 106, 0.25);
     border-radius: 9999px;
-    margin-bottom: 32px;
+    margin-bottom: 16px;
+    /* Reduced margin */
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
 }
@@ -72,7 +73,8 @@
 }
 
 .hero-title-img {
-    margin: 0 auto 32px;
+    margin: 0 auto 16px;
+    /* Reduced margin to bring closer to text */
     position: relative;
     z-index: 1;
     display: flex;
@@ -82,19 +84,23 @@
 
 .hero-logo {
     width: 100%;
-    max-width: 480px;
-    /* Tamanho majestoso para Desktop */
+    max-width: 320px;
+    /* Reduzido para ficar totalmente visível */
     height: auto;
     object-fit: contain;
     filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.1));
 }
 
 .hero-subtitle {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
+    /* Letter-style typography */
     color: #D1D5DB;
-    max-width: 680px;
-    margin: 0 auto 48px;
-    line-height: 1.7;
+    max-width: 720px;
+    /* Wider for comfortable reading like a letter */
+    margin: 0 auto 32px;
+    /* Closer to actions */
+    line-height: 1.8;
+    /* Generous line height for reading */
     text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     z-index: 5;
     position: relative;
@@ -546,7 +552,8 @@
 /* LARGE TABLETS & SMALL DESKTOPS */
 @media (max-width: 1024px) {
     .hero-logo {
-        max-width: 380px;
+        max-width: 280px;
+        /* Resized for tablet */
     }
 
     .section-title {
@@ -606,7 +613,7 @@
 
     .hero-badge {
         padding: 6px 16px;
-        margin-bottom: 24px;
+        margin-bottom: 16px;
     }
 
     .badge-text {
@@ -614,12 +621,14 @@
     }
 
     .hero-logo {
-        max-width: 320px;
+        max-width: 240px;
+        /* Reduced for tablet/mobile */
     }
 
     .hero-subtitle {
         font-size: 1.05rem;
-        margin-bottom: 40px;
+        margin-bottom: 24px;
+        line-height: 1.6;
     }
 
     .hero-actions {
@@ -662,7 +671,11 @@
     }
 
     .hero-logo {
-        max-width: 260px;
+        max-width: 200px;
+    }
+
+    .hero-badge {
+        margin-bottom: 16px;
     }
 
     .hero-subtitle {
