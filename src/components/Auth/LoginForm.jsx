@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { LogIn, UserPlus, Mail, Lock, AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
-import '../../pages/Login.css'; // reaproveitar o CSS base
+import './LoginForm.css'; // reaproveitar o CSS base
 
 export default function LoginForm() {
     const navigate = useNavigate();
