@@ -1,5 +1,5 @@
 .suggestions-section {
-    padding: 8px 0;
+    padding: 4px 0;
     width: 100%;
 }
 
@@ -15,7 +15,7 @@
     color: var(--text-gray);
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     display: block;
     text-align: center;
 }
@@ -26,8 +26,8 @@
     gap: 12px;
     justify-content: flex-start;
     /* Melhor para scroll horizontal */
-    padding: 20px 24px;
-    margin-top: -8px;
+    padding: 8px 24px;
+    margin-top: -4px;
     /* Compensar padding extra */
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;

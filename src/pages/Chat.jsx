@@ -364,7 +364,7 @@ const Chat = () => {
                                 <section className="chat-start-view animate-fade-in">
                                     <div className="brand-badge">Conversando com Deus</div>
                                     <div className="start-icon-premium">
-                                        <Sparkles size={48} className="sparkle-animate" />
+                                        <Sparkles size={40} className="sparkle-animate" />
                                     </div>
                                     {user ? (
                                         <>

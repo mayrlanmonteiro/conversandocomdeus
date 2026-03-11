@@ -295,23 +295,23 @@
     display: flex;
     flex-direction: column;
     min-height: 100%;
-    padding: 3rem 1rem 1rem;
+    padding: 1.5rem 1rem 1rem; /* Reduced top padding for more space */
 }
 
 /* --- Welcome / Start View (Light) --- */
 .chat-start-view {
-    padding: 16px 24px 8px;
+    padding: 0.5rem 1.5rem; /* Even tighter padding */
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     flex: 1;
-    gap: 4px;
+    gap: 0.25rem;
 }
 
 .start-icon-premium {
-    margin: 1.5rem 0;
+    margin: 0.25rem 0; /* Minimal margin */
     color: var(--accent-blue-strong);
     display: flex;
     align-items: center;
@@ -352,19 +352,19 @@
 }
 
 .chat-start-view h2 {
-    font-size: 1.8rem;
+    font-size: 1.5rem; /* Reduced from 1.8rem */
     font-weight: 800;
     color: var(--text-dark);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
     letter-spacing: -0.02em;
 }
 
 .chat-start-view p {
     color: var(--text-gray);
-    margin-bottom: 2rem;
+    margin-bottom: 1rem; /* Reduced from 2rem */
     max-width: 500px;
-    font-size: 1rem;
-    line-height: 1.5;
+    font-size: 0.95rem; /* Slightly smaller */
+    line-height: 1.4;
 }
 
 .start-suggestion-box {
