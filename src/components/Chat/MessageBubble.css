@@ -1,14 +1,17 @@
 .message-wrapper {
     display: flex;
-    padding: 1rem 0;
+    padding: 0.8rem 0;
     width: 100%;
     animation: fadeInMessage 0.3s ease-out;
 }
 
+.message-wrapper.user {
+    justify-content: flex-end; /* Align user messages to the right */
+}
+
 .message-container {
-    width: 100%;
+    max-width: 80%; /* Don't let messages span the full column width */
     display: flex;
-    gap: 1.5rem;
     align-items: flex-start;
 }
 
@@ -39,35 +42,29 @@
 .message-bubble-body {
     display: flex;
     flex-direction: column;
-    flex: 1;
-    /* Occupy full width of column */
 }
 
-.sender-label {
-    font-size: 0.85rem;
-    font-weight: 700;
-    margin-bottom: 0.4rem;
-    color: var(--text-dark);
+.message-wrapper.user .message-bubble-body {
+    align-items: flex-end;
 }
 
 .bubble-content {
-    font-size: 1.05rem;
-    line-height: 1.7;
+    font-size: 1rem;
+    line-height: 1.6;
     position: relative;
-    color: var(--text-dark-soft);
+    color: var(--text-dark);
 }
 
 .assistant .bubble-content {
-    /* No bubble for assistant, just pure text flow like ChatGPT */
     background: transparent;
+    padding: 0;
 }
 
 .user .bubble-content {
-    /* Subtle background for user message to differentiate slightly if needed, or keep it clean */
-    background: #f4f4f4;
-    padding: 0.8rem 1.2rem;
-    border-radius: 1.2rem;
-    width: fit-content;
+    background: #f4f4f4; /* ChatGPT light gray */
+    padding: 0.6rem 1.25rem;
+    border-radius: 1.5rem;
+    color: #000;
 }
 
 /* Markdown Details */
@@ -86,9 +83,9 @@
 
 /* Actions (Hover) */
 .bubble-actions {
-    margin-top: 6px;
+    margin-top: 0.4rem;
     display: flex;
-    gap: 8px;
+    gap: 4px;
     opacity: 0;
     transition: opacity 0.2s ease;
 }
@@ -97,41 +94,26 @@
     opacity: 1;
 }
 
-.btn-copy-bubble,
-.btn-bookmark-bubble {
-    background: var(--bg-white);
-    border: 1px solid var(--border-light);
+.btn-action-bubble {
+    background: transparent;
+    border: none;
     color: var(--text-gray);
     cursor: pointer;
-    font-size: 0.72rem;
-    font-weight: 600;
+    padding: 6px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 6px 12px;
-    border-radius: 99px;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    justify-content: center;
+    transition: all 0.2s ease;
 }
 
-.btn-copy-bubble:hover {
-    color: var(--accent-blue-strong);
-    border-color: var(--accent-blue-strong);
-    background: var(--bg-light);
+.btn-action-bubble:hover {
+    background: var(--bg-light-alt);
+    color: var(--text-dark);
 }
 
-.btn-bookmark-bubble:hover {
-    color: #d97706;
-    /* Gold/Amber strong */
-    border-color: #f59e0b;
-    background: #fffbeb;
-}
-
-.btn-bookmark-bubble.active {
-    background: #fef3c7;
-    border-color: #f59e0b;
-    color: #d97706;
-    cursor: default;
+.btn-action-bubble.active {
+    color: #f59e0b;
 }
 
 @keyframes fadeInMessage {

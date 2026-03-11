@@ -17,19 +17,7 @@ const MessageBubble = ({ message, isStreaming = false, onBookmark = null, isBook
     return (
         <div className={`message-wrapper ${isAssistant ? 'assistant' : 'user'}`}>
             <div className="message-container">
-                <div className="message-avatar-group">
-                    {isAssistant ? (
-                        <div className="avatar-ai"><Sparkles size={18} /></div>
-                    ) : (
-                        <div className="avatar-user"><User size={20} /></div>
-                    )}
-                </div>
-
                 <div className="message-bubble-body">
-                    <span className="sender-label">
-                        {isAssistant ? "Assistente" : "Você"}
-                    </span>
-
                     <div className="bubble-content">
                         <div className="message-text">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -37,33 +25,26 @@ const MessageBubble = ({ message, isStreaming = false, onBookmark = null, isBook
                             </ReactMarkdown>
                             {isStreaming && <span className="streaming-tick"></span>}
                         </div>
-
-                        {isAssistant && message.content && !isStreaming && (
-                            <div className="bubble-actions">
-                                <button className="btn-copy-bubble" onClick={handleCopy}>
-                                    {copied ? (
-                                        <><Check size={14} /> Copiado</>
-                                    ) : (
-                                        <><Copy size={14} /> Copiar</>
-                                    )}
-                                </button>
-
-                                {onBookmark && (
-                                    <button
-                                        className={`btn-bookmark-bubble ${isBookmarked ? 'active' : ''}`}
-                                        onClick={() => onBookmark(message)}
-                                        disabled={isBookmarked}
-                                    >
-                                        {isBookmarked ? (
-                                            <><BookmarkCheck size={14} /> Salvo</>
-                                        ) : (
-                                            <><Bookmark size={14} /> Salvar conselho</>
-                                        )}
-                                    </button>
-                                )}
-                            </div>
-                        )}
                     </div>
+
+                    {isAssistant && message.content && !isStreaming && (
+                        <div className="bubble-actions">
+                            <button className="btn-action-bubble" onClick={handleCopy} title="Copiar">
+                                {copied ? <Check size={16} /> : <Copy size={16} />}
+                            </button>
+
+                            {onBookmark && (
+                                <button
+                                    className={`btn-action-bubble ${isBookmarked ? 'active' : ''}`}
+                                    onClick={() => onBookmark(message)}
+                                    disabled={isBookmarked}
+                                    title="Salvar"
+                                >
+                                    {isBookmarked ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
