@@ -31,7 +31,7 @@ export default function Header() {
         <header className={`header ${isChat ? 'is-light' : ''}`} id="main-header">
             <div className="header-inner container">
                 <Link to="/" className="header-logo" aria-label="Conversando com Deus - Início">
-                    <img src="/logo.png" alt="Conversando com Deus" className="brand-logo" />
+                    <img src="/logo.png?v=2" alt="Conversando com Deus" className="brand-logo" />
                 </Link>
 
                 <nav className="header-nav" aria-label="Navegação principal">
