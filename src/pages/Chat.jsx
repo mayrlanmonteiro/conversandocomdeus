@@ -383,16 +383,19 @@ const Chat = () => {
                         <div className="messages-scroll-area">
                             {messages.length === 0 && !isLoading && (
                                 <section className="chat-start-view animate-fade-in">
-                                    <div className="start-icon">🕊️</div>
+                                    <div className="brand-badge">Conversando com Deus</div>
+                                    <div className="start-icon-premium">
+                                        <Sparkles size={48} className="sparkle-animate" />
+                                    </div>
                                     {user ? (
                                         <>
                                             <h2>Olá! Como posso te ajudar hoje?</h2>
-                                            <p>Suas conversas agora são salvas individualmente no seu histórico ao lado.</p>
+                                            <p>Suas conversas agora são salvas individualmente no seu histórico ao lado. Escolha um tema abaixo ou peça uma orientação bíblica.</p>
                                         </>
                                     ) : (
                                         <>
                                             <h2>Como posso te ajudar hoje?</h2>
-                                            <p>Escolha um tema abaixo ou escreva sua própria dúvida para iniciarmos.</p>
+                                            <p>Este é um espaço seguro. Escolha um tema abaixo ou escreva sua própria dúvida para iniciarmos.</p>
                                         </>
                                     )}
 

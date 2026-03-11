@@ -1,23 +1,15 @@
 .message-wrapper {
     display: flex;
-    padding: 16px 20px;
+    padding: 1rem 0;
     width: 100%;
     animation: fadeInMessage 0.3s ease-out;
 }
 
-.message-wrapper.user {
-    justify-content: flex-end;
-}
-
 .message-container {
-    max-width: 85%;
+    width: 100%;
     display: flex;
-    gap: 12px;
+    gap: 1.5rem;
     align-items: flex-start;
-}
-
-.message-wrapper.user .message-container {
-    flex-direction: row-reverse;
 }
 
 /* Identitity / Avatar (Minimalist Light) */
@@ -47,44 +39,35 @@
 .message-bubble-body {
     display: flex;
     flex-direction: column;
-}
-
-.message-wrapper.user .message-bubble-body {
-    align-items: flex-end;
+    flex: 1;
+    /* Occupy full width of column */
 }
 
 .sender-label {
-    font-size: 0.7rem;
+    font-size: 0.85rem;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 4px;
-    color: var(--text-gray);
-    opacity: 0.8;
+    margin-bottom: 0.4rem;
+    color: var(--text-dark);
 }
 
 .bubble-content {
-    padding: 14px 18px;
-    border-radius: 14px;
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: 1.05rem;
+    line-height: 1.7;
     position: relative;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    color: var(--text-dark-soft);
 }
 
 .assistant .bubble-content {
-    background: var(--accent-gray-soft);
-    color: var(--text-dark-soft);
-    border: 1px solid var(--border-light);
-    border-left: 4px solid var(--accent-gold-soft);
-    border-top-left-radius: 4px;
+    /* No bubble for assistant, just pure text flow like ChatGPT */
+    background: transparent;
 }
 
 .user .bubble-content {
-    background: var(--accent-blue-soft);
-    color: var(--text-dark-soft);
-    border: 1px solid rgba(37, 99, 235, 0.1);
-    border-top-right-radius: 4px;
+    /* Subtle background for user message to differentiate slightly if needed, or keep it clean */
+    background: #f4f4f4;
+    padding: 0.8rem 1.2rem;
+    border-radius: 1.2rem;
+    width: fit-content;
 }
 
 /* Markdown Details */

@@ -12,9 +12,9 @@
     flex: 1;
     overflow: hidden;
     position: relative;
-    max-width: 1400px;
     width: 100%;
-    margin: 0 auto;
+    margin: 0;
+    /* Full width distribution */
 }
 
 /* --- Sidebar Styles --- */
@@ -266,9 +266,13 @@
 
 .messages-scroll-area {
     width: 100%;
+    max-width: 800px;
+    /* ChatGPT-like narrow column for readability */
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     min-height: 100%;
+    padding: 2rem 1rem;
 }
 
 /* --- Welcome / Start View (Light) --- */
@@ -283,23 +287,61 @@
     gap: 4px;
 }
 
-.start-icon {
-    font-size: 2rem;
-    margin-bottom: 4px;
+.start-icon-premium {
+    margin: 1.5rem 0;
+    color: var(--accent-blue-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sparkle-animate {
+    animation: sparkleSpin 4s linear infinite;
+}
+
+@keyframes sparkleSpin {
+    0% {
+        transform: scale(1) rotate(0deg);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.1) rotate(180deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1) rotate(360deg);
+        opacity: 0.8;
+    }
+}
+
+.brand-badge {
+    padding: 0.4rem 1rem;
+    background: var(--accent-blue-soft);
+    color: var(--accent-blue-strong);
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
 }
 
 .chat-start-view h2 {
-    font-size: 1.3rem;
+    font-size: 1.8rem;
+    font-weight: 800;
     color: var(--text-dark);
-    margin-bottom: 2px;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
 }
 
 .chat-start-view p {
     color: var(--text-gray);
-    margin-bottom: 12px;
-    max-width: 450px;
-    font-size: 0.85rem;
-    line-height: 1.4;
+    margin-bottom: 2rem;
+    max-width: 500px;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
 .start-suggestion-box {
@@ -309,9 +351,12 @@
 
 /* --- Input Area (Light) --- */
 .chat-panel-footer {
-    padding: 16px 24px 20px;
-    background: var(--bg-white);
-    border-top: 1px solid var(--border-light);
+    padding: 1rem 1.5rem 1.5rem;
+    background: transparent;
+    /* Makes it feel more floating */
+    width: 100%;
+    max-width: 840px;
+    margin: 0 auto;
 }
 
 .footer-chips-wrapper {
