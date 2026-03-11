@@ -79,6 +79,7 @@
     padding: 0 12px 20px;
 }
 
+
 .conversation-item {
     display: flex;
     align-items: center;
@@ -499,6 +500,8 @@
         transform: translateY(0);
     }
 }
+
+
 
 .auth-nudge-footer {
     text-align: center;
