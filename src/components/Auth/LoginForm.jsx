@@ -7,6 +7,7 @@ import './LoginForm.css'; // reaproveitar o CSS base
 export default function LoginForm() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [isLoadingGoogle, setIsLoadingGoogle] = useState(false);
     const [error, setError] = useState(null);
     const [isSignUp, setIsSignUp] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -77,18 +78,23 @@ export default function LoginForm() {
     };
 
     const handleGoogleLogin = async () => {
+        setError(null);
+        setIsLoadingGoogle(true);
+        
         try {
-            setLoading(true);
-            const { error } = await supabase.auth.signInWithOAuth({
+            const { error: googleError } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: window.location.origin + '/chat'
+                    redirectTo: `${window.location.origin}/chat`
                 }
             });
-            if (error) throw error;
+            
+            if (googleError) throw googleError;
+            // O Supabase redirecionará o usuário automaticamente
         } catch (err) {
-            setError(err.message);
-            setLoading(false);
+            console.error('Erro ao entrar com Google:', err);
+            setError('Não foi possível conectar com o Google. Tente novamente.');
+            setIsLoadingGoogle(false);
         }
     };
 
@@ -188,9 +194,23 @@ export default function LoginForm() {
             </div>
 
             <div className="social-login-premium">
-                <button onClick={handleGoogleLogin} className="google-btn" type="button" disabled={loading}>
-                    <img src="https://www.google.com/favicon.ico" alt="" width="18" height="18" />
-                    <span>Google</span>
+                <button 
+                    onClick={handleGoogleLogin} 
+                    className="google-btn" 
+                    type="button" 
+                    disabled={loading || isLoadingGoogle}
+                >
+                    {isLoadingGoogle ? (
+                        <>
+                            <Loader2 className="spinner" size={18} />
+                            <span>Entrando...</span>
+                        </>
+                    ) : (
+                        <>
+                            <img src="https://www.google.com/favicon.ico" alt="" width="18" height="18" />
+                            <span>Google</span>
+                        </>
+                    )}
                 </button>
             </div>
 
