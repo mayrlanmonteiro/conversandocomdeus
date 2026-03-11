@@ -170,14 +170,37 @@
 }
 
 /* --- Panel Header (Light) --- */
-.chat-panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 24px;
+/* --- Floating Sidebar Toggle (Top Left) --- */
+.sidebar-toggle-floating {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 50;
+    display: none; /* Only visible on mobile/tablet */
     background: var(--bg-white);
-    border-bottom: 1px solid var(--border-light);
+    border: 1px solid var(--border-light);
+    color: var(--text-gray);
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
 }
+
+.sidebar-toggle-floating:hover {
+    background: var(--bg-light-alt);
+    color: var(--text-dark);
+}
+
+@media (max-width: 1024px) {
+    .sidebar-toggle-floating {
+        display: flex;
+    }
+}
+
 
 .chat-header-info {
     display: flex;
@@ -272,7 +295,7 @@
     display: flex;
     flex-direction: column;
     min-height: 100%;
-    padding: 2rem 1rem;
+    padding: 3rem 1rem 1rem;
 }
 
 /* --- Welcome / Start View (Light) --- */
@@ -351,17 +374,14 @@
 
 /* --- Input Area (Light) --- */
 .chat-panel-footer {
-    padding: 1rem 1.5rem 1.5rem;
+    padding: 0 1.5rem 1.5rem; /* Sub-header gone, reduced top padding */
     background: transparent;
-    /* Makes it feel more floating */
     width: 100%;
     max-width: 840px;
     margin: 0 auto;
 }
 
-.footer-chips-wrapper {
-    margin-bottom: 12px;
-}
+/* Suggestions chips wrapper removed as per user request */
 
 .input-container-premium {
     width: 100%;

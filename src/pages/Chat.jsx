@@ -353,33 +353,12 @@ const Chat = () => {
                 </aside>
 
                 <div className="chat-panel">
-                    <header className="chat-panel-header">
-                        <div className="chat-header-info">
-                            <button className="sidebar-toggle-btn" onClick={() => setIsSidebarOpen(true)}>
-                                <Menu size={20} />
-                            </button>
-                            <div className="header-icon-rounded">
-                                <Sparkles size={20} />
-                            </div>
-                            <div className="header-titles">
-                                <h3>{activeConversationId ? conversations.find(c => c.id === activeConversationId)?.title : 'Assistente Spiritual'}</h3>
-                                <p>Conversando com Deus</p>
-                            </div>
-                        </div>
-                        <button className="btn-refresh-chat" onClick={handleNewChat} disabled={isLoading}>
-                            <RefreshCw size={14} />
-                            <span className="visually-hidden-mobile">Nova conversa</span>
-                        </button>
-                    </header>
-
-                    <div className="safety-ribbon">
-                        <div className="safety-pill">
-                            <ShieldCheck size={14} />
-                            <span>Espaço seguro e privativo para a sua fé.</span>
-                        </div>
-                    </div>
-
                     <main className="chat-messages-viewport">
+                        {/* Sidebar Toggle for Mobile - Floating when header is gone */}
+                        <button className="sidebar-toggle-floating" onClick={() => setIsSidebarOpen(true)}>
+                            <Menu size={22} />
+                        </button>
+
                         <div className="messages-scroll-area">
                             {messages.length === 0 && !isLoading && (
                                 <section className="chat-start-view animate-fade-in">
@@ -444,11 +423,6 @@ const Chat = () => {
                     </main>
 
                     <footer className="chat-panel-footer">
-                        {messages.length > 0 && (
-                            <div className="footer-chips-wrapper">
-                                <SuggestionChips onSelect={(t) => handleQuickPrompt(t.id)} hideLabel={true} />
-                            </div>
-                        )}
                         <div className="input-container-premium">
                             <MessageInput
                                 value={inputValue}
