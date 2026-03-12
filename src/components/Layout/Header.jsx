@@ -8,8 +8,14 @@ export default function Header() {
     const location = useLocation();
     const isLightMode = location.pathname === '/chat' || location.pathname === '/profile';
     const [user, setUser] = useState(null);
+    const [scrolled, setScrolled] = useState(false);
 
     useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
+        };
+        window.addEventListener('scroll', handleScroll);
+        
         // Verificar sessão inicial
         supabase.auth.getSession().then(({ data: { session } }) => {
             setUser(session?.user ?? null);
@@ -20,7 +26,10 @@ export default function Header() {
             setUser(session?.user ?? null);
         });
 
-        return () => subscription.unsubscribe();
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            subscription.unsubscribe();
+        };
     }, []);
 
     const handleLogout = async () => {
@@ -28,7 +37,7 @@ export default function Header() {
     };
 
     return (
-        <header className={`header ${isLightMode ? 'is-light' : ''}`} id="main-header">
+        <header className={`header ${isLightMode ? 'is-light' : ''} ${scrolled ? 'is-scrolled' : ''}`} id="main-header">
             <div className="header-inner container">
                 <Link to="/" className="header-logo" aria-label="Conversando com Deus - Início">
                     <img src="/logo.png?v=2" alt="Conversando com Deus" className="brand-logo" />

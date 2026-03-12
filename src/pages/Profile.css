@@ -2,13 +2,12 @@
 .profile-page {
     min-height: 100vh;
     background-color: #F9FAFB;
-    padding-top: calc(var(--header-height) + 40px);
     padding-bottom: 80px;
 }
 
 .profile-wrapper {
     max-width: 1040px;
-    margin: 0 auto;
+    margin: 40px auto 0;
     padding: 0 24px;
 }
 
