@@ -12,27 +12,17 @@
 }
 
 .header.is-light {
-    background: rgba(255, 255, 255, 0.8);
-    border-bottom: 1px solid var(--border-light);
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid #E5E7EB;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
-.header.is-light .logo-title {
-    color: var(--text-dark);
+.header.is-light .user-email {
+    color: #4B5563;
 }
 
-.header.is-light .logo-tagline {
-    color: var(--text-gray);
-}
-
-.header.is-light .btn-secondary {
-    background: var(--bg-light);
-    color: var(--text-dark);
-    border-color: var(--border-light);
-}
-
-.header.is-light .btn-secondary:hover {
-    background: var(--accent-blue-soft);
-    border-color: var(--accent-blue-strong);
+.header.is-light .user-avatar-mini {
+    border: 2px solid #E5E7EB;
 }
 
 .header-inner {
@@ -47,7 +37,6 @@
     align-items: center;
     text-decoration: none;
     transition: transform 0.2s ease;
-    position: relative;
     width: 220px;
     height: 100%;
 }
@@ -57,16 +46,11 @@
 }
 
 .brand-logo {
-    position: absolute;
-    top: 50%;
-    left: -20px;
-    transform: translateY(-50%);
-    width: 220px; /* Reduced for better balance */
-    max-width: none;
-    height: auto;
+    width: 220px; 
+    height: 100%;
     object-fit: contain;
     display: block;
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.05));
 }
 
 @media (max-width: 640px) {

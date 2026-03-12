@@ -6,7 +6,7 @@ import './Header.css';
 
 export default function Header() {
     const location = useLocation();
-    const isChat = location.pathname === '/chat';
+    const isLightMode = location.pathname === '/chat' || location.pathname === '/profile';
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -28,7 +28,7 @@ export default function Header() {
     };
 
     return (
-        <header className={`header ${isChat ? 'is-light' : ''}`} id="main-header">
+        <header className={`header ${isLightMode ? 'is-light' : ''}`} id="main-header">
             <div className="header-inner container">
                 <Link to="/" className="header-logo" aria-label="Conversando com Deus - Início">
                     <img src="/logo.png?v=2" alt="Conversando com Deus" className="brand-logo" />
