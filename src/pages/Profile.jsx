@@ -1,12 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import Header from '../components/Layout/Header';
-import { User, Mail, Calendar, Save, CheckCircle, AlertCircle, MessageSquare, Bookmark, Trash2, Quote } from 'lucide-react';
+import { 
+    User, Mail, Calendar, Save, CheckCircle, AlertCircle, 
+    MessageSquare, Bookmark, Trash2, Heart, Sparkles, 
+    ChevronRight, Book, Clock, Settings, Edit3
+} from 'lucide-react';
 import './Profile.css';
 
 export default function Profile() {
     const navigate = useNavigate();
+    const formRef = useRef(null);
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
     const [user, setUser] = useState(null);
@@ -95,30 +100,37 @@ export default function Profile() {
         }
     }
 
+    const scrollToEdit = () => {
+        formRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
     if (loading) {
         return (
             <div className="profile-page">
                 <Header />
-                <div className="profile-container" style={{ textAlign: 'center', marginTop: '100px' }}>
-                    <p>Carregando sua jornada...</p>
+                <div className="profile-loading">
+                    <div className="spinner-premium"></div>
+                    <p>Carregando sua jornada espiritual...</p>
                 </div>
             </div>
         );
     }
 
-    const firstLetter = profile.full_name ? profile.full_name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase();
+    const firstLetter = profile.full_name ? profile.full_name.charAt(0).toUpperCase() : user.email?.charAt(0).toUpperCase();
 
     return (
         <div className="profile-page">
             <Header />
 
-            <main className="profile-container">
-                <div className="profile-card">
-                    <div className="profile-cover"></div>
-
-                    <div className="profile-header">
-                        <div className="profile-avatar-wrapper">
-                            <div className="profile-avatar">
+            <main className="profile-wrapper">
+                <div className="profile-card-premium">
+                    {/* COVER E AVATAR */}
+                    <div className="profile-hero">
+                        <div className="profile-cover-gradient">
+                            <div className="cover-particles"></div>
+                        </div>
+                        <div className="profile-avatar-container">
+                            <div className="profile-avatar-premium">
                                 {user.user_metadata?.avatar_url ? (
                                     <img src={user.user_metadata.avatar_url} alt="Avatar" />
                                 ) : (
@@ -126,60 +138,110 @@ export default function Profile() {
                                 )}
                             </div>
                         </div>
+                    </div>
 
-                        <div className="profile-info">
-                            <h2>{profile.full_name || 'Irmão(ã) em Cristo'}</h2>
-                            <p className="profile-email">{user.email}</p>
+                    {/* CABEÇALHO DE INFO */}
+                    <div className="profile-header-premium">
+                        <div className="profile-main-info">
+                            <h1>{profile.full_name || 'Irmão(ã) em Cristo'}</h1>
+                            <p className="p-email">{user.email}</p>
+                            <p className="p-member-since">
+                                Membro desde {new Date(user.created_at).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+                            </p>
+                        </div>
+                        
+                        <div className="profile-header-actions">
+                            <button className="btn-edit-shortcut" onClick={scrollToEdit}>
+                                <Edit3 size={18} />
+                                <span>Editar Perfil</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* CARDS DE ESTATÍSTICAS */}
+                    <div className="profile-stats-grid">
+                        <div className="stat-card">
+                            <div className="stat-icon-box blue">
+                                <MessageSquare size={20} />
+                            </div>
+                            <div className="stat-content">
+                                <span className="stat-num">{messageCount}</span>
+                                <span className="stat-txt">Mensagens</span>
+                            </div>
+                        </div>
+                        
+                        <div className="stat-card">
+                            <div className="stat-icon-box gold">
+                                <Heart size={20} />
+                            </div>
+                            <div className="stat-content">
+                                <span className="stat-num">{bookmarks.length}</span>
+                                <span className="stat-txt">Favoritos</span>
+                            </div>
                         </div>
 
-                        <div className="profile-stats">
-                            <div className="stat-item">
-                                <span className="stat-value">{messageCount}</span>
-                                <span className="stat-label">Mensagens</span>
+                        <div className="stat-card">
+                            <div className="stat-icon-box purple">
+                                <Calendar size={20} />
                             </div>
-                            <div className="stat-item">
-                                <span className="stat-value">{bookmarks.length}</span>
-                                <span className="stat-label">Favoritos</span>
-                            </div>
-                            <div className="stat-item">
-                                <span className="stat-value">
-                                    {new Date(user.created_at).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}
+                            <div className="stat-content">
+                                <span className="stat-num">
+                                    {new Date(user.created_at).getFullYear()}
                                 </span>
-                                <span className="stat-label">Desde</span>
+                                <span className="stat-txt">Desde</span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="profile-content">
-                        <section className="profile-section">
-                            <h3 className="section-title">
-                                <Quote size={20} />
-                                Conselhos e Orações Favoritas
-                            </h3>
+                    <div className="profile-sections-container">
+                        {/* FAVORITOS */}
+                        <section className="p-section">
+                            <div className="section-header">
+                                <div className="section-title-group">
+                                    <Heart className="title-icon" size={22} />
+                                    <h2>Conselhos e Orações Favoritas</h2>
+                                </div>
+                                <p className="section-desc">
+                                    Aqui aparecem os conselhos e orações que você marcou com estrela nas conversas.
+                                </p>
+                            </div>
 
                             {bookmarks.length === 0 ? (
-                                <div className="empty-bookmarks">
-                                    <Bookmark size={48} />
-                                    <p>Nenhum conselho salvo ainda. Vá ao chat e clique na estrela para guardar uma mensagem!</p>
+                                <div className="empty-state-card">
+                                    <div className="empty-icon-circle">
+                                        <Bookmark size={32} />
+                                    </div>
+                                    <h3>Nenhum conselho salvo ainda</h3>
+                                    <p>Vá ao chat e clique no ícone de estrela ao lado de uma resposta para guardá-la aqui.</p>
+                                    <button className="btn-go-chat" onClick={() => navigate('/chat')}>
+                                        Começar conversa
+                                    </button>
                                 </div>
                             ) : (
-                                <div className="bookmarks-grid">
+                                <div className="favorites-list">
                                     {bookmarks.map((bookmark) => (
-                                        <div key={bookmark.id} className="bookmark-card">
-                                            <div className="bookmark-content">
-                                                {bookmark.content}
+                                        <div key={bookmark.id} className="fav-card-modern">
+                                            <div className="fav-body">
+                                                <Quote size={24} className="fav-quote-icon" />
+                                                <div className="fav-text">
+                                                    {bookmark.content.length > 200 
+                                                        ? `${bookmark.content.substring(0, 200)}...` 
+                                                        : bookmark.content}
+                                                </div>
                                             </div>
-                                            <div className="bookmark-footer">
-                                                <span className="bookmark-date">
-                                                    Salvo em {new Date(bookmark.created_at).toLocaleDateString('pt-BR')}
-                                                </span>
-                                                <button
-                                                    className="btn-remove-bookmark"
-                                                    onClick={() => removeBookmark(bookmark.id)}
-                                                    title="Remover dos favoritos"
-                                                >
-                                                    <Trash2 size={16} />
-                                                </button>
+                                            <div className="fav-footer">
+                                                <div className="fav-meta">
+                                                    <span className="fav-tag">Salvo em {new Date(bookmark.created_at).toLocaleDateString('pt-BR')}</span>
+                                                </div>
+                                                <div className="fav-actions">
+                                                    <button 
+                                                        className="btn-remove-fav"
+                                                        onClick={() => removeBookmark(bookmark.id)}
+                                                        title="Remover"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     ))}
@@ -187,36 +249,33 @@ export default function Profile() {
                             )}
                         </section>
 
-                        <section className="profile-section">
-                            <h3 className="section-title">
-                                <User size={20} />
-                                Informações Pessoais
-                            </h3>
+                        <div className="separator-light"></div>
+
+                        {/* INFORMAÇÕES PESSOAIS */}
+                        <section className="p-section" ref={formRef}>
+                            <div className="section-header">
+                                <div className="section-title-group">
+                                    <Settings className="title-icon" size={22} />
+                                    <h2>Informações Pessoais</h2>
+                                </div>
+                                <p className="section-desc">Atualize seus dados básicos. Seu e-mail permanece privado.</p>
+                            </div>
 
                             {status.message && (
-                                <div className={`status-message ${status.type}`} style={{
-                                    padding: '12px',
-                                    borderRadius: '8px',
-                                    marginBottom: '20px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    fontSize: '0.9rem',
-                                    backgroundColor: status.type === 'success' ? '#ECFDF5' : '#FEF2F2',
-                                    color: status.type === 'success' ? '#059669' : '#B91C1C',
-                                    border: `1px solid ${status.type === 'success' ? '#A7F3D0' : '#FEE2E2'}`
-                                }}>
+                                <div className={`status-banner ${status.type} animate-fade-in`}>
                                     {status.type === 'success' ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
-                                    {status.message}
+                                    <span>{status.message}</span>
                                 </div>
                             )}
 
-                            <form className="profile-form" onSubmit={updateProfile}>
-                                <div className="form-grid">
-                                    <div className="form-group">
-                                        <label>Nome Completo</label>
-                                        <div style={{ position: 'relative' }}>
+                            <form className="p-form-modern" onSubmit={updateProfile}>
+                                <div className="modern-form-grid">
+                                    <div className="input-field-group">
+                                        <label htmlFor="p-name">Nome Completo</label>
+                                        <div className="input-with-icon">
+                                            <User size={18} className="field-icon" />
                                             <input
+                                                id="p-name"
                                                 type="text"
                                                 value={profile.full_name}
                                                 onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
@@ -225,39 +284,99 @@ export default function Profile() {
                                         </div>
                                     </div>
 
-                                    <div className="form-group">
-                                        <label>E-mail (Privado)</label>
-                                        <input
-                                            type="email"
-                                            value={profile.email}
-                                            disabled
-                                            style={{ opacity: 0.6, cursor: 'not-allowed' }}
-                                        />
+                                    <div className="input-field-group">
+                                        <label htmlFor="p-email">E-mail (Privado)</label>
+                                        <div className="input-with-icon disabled">
+                                            <Mail size={18} className="field-icon" />
+                                            <input
+                                                id="p-email"
+                                                type="email"
+                                                value={profile.email}
+                                                disabled
+                                            />
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="profile-actions">
+                                <div className="p-form-footer">
                                     <button
                                         type="button"
-                                        className="btn btn-secondary"
+                                        className="btn-back-link"
                                         onClick={() => navigate('/chat')}
                                     >
                                         Voltar ao Chat
                                     </button>
                                     <button
                                         type="submit"
-                                        className="btn-save"
+                                        className="btn-save-premium"
                                         disabled={updating}
                                     >
-                                        {updating ? 'Salvando...' : (
+                                        {updating ? (
+                                            <div className="loading-inline">
+                                                <div className="spinner-tiny"></div>
+                                                <span>Salvando...</span>
+                                            </div>
+                                        ) : (
                                             <>
                                                 <Save size={18} />
-                                                Salvar Alterações
+                                                <span>Salvar Alterações</span>
                                             </>
                                         )}
                                     </button>
                                 </div>
                             </form>
+                        </section>
+
+                        <div className="separator-light"></div>
+
+                        {/* PREFERÊNCIAS ESPIRITUAIS (LAYOUT PRONTO) */}
+                        <section className="p-section">
+                            <div className="section-header">
+                                <div className="section-title-group">
+                                    <Sparkles className="title-icon" size={22} />
+                                    <h2>Preferências Espirituais</h2>
+                                </div>
+                                <p className="section-desc">Personalize sua experiência bíblica (funcionalidade em breve).</p>
+                            </div>
+
+                            <div className="preferences-preview">
+                                <div className="pref-row">
+                                    <div className="pref-col">
+                                        <label>Versão Bíblica Preferida</label>
+                                        <select disabled className="modern-select">
+                                            <option>NVI (Nova Versão Internacional)</option>
+                                            <option>Almeida Revista e Atualizada (ARA)</option>
+                                            <option>Nova Versão Transformadora (NVT)</option>
+                                        </select>
+                                    </div>
+                                    <div className="pref-col">
+                                        <label>Horário de Devocional</label>
+                                        <select disabled className="modern-select">
+                                            <option>Manhã (Ao acordar)</option>
+                                            <option>Tarde (Pausa do dia)</option>
+                                            <option>Noite (Antes de dormir)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="pref-checkbox-group">
+                                    <label className="group-label">Temas de interesse</label>
+                                    <div className="checkbox-grid">
+                                        <div className="check-item">
+                                            <input type="checkbox" checked disabled id="t1" />
+                                            <label htmlFor="t1">Devocionais diários</label>
+                                        </div>
+                                        <div className="check-item">
+                                            <input type="checkbox" disabled id="t2" />
+                                            <label htmlFor="t2">Estudos aprofundados</label>
+                                        </div>
+                                        <div className="check-item">
+                                            <input type="checkbox" checked disabled id="t3" />
+                                            <label htmlFor="t3">Conselhos práticos</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </section>
                     </div>
                 </div>
