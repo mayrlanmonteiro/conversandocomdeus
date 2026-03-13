@@ -54,19 +54,25 @@ export default async function handler(req, res) {
     if (!customerId) {
       const customer = await stripe.customers.create({
         email: user.email,
+        name: user.user_metadata?.full_name || user.email.split('@')[0],
         metadata: { supabaseUserId: user.id },
       });
       customerId = customer.id;
 
-      await supabaseAdmin
+      const { error: updateError } = await supabaseAdmin
         .from('profiles')
         .update({ stripe_customer_id: customerId })
         .eq('id', user.id);
+      
+      if (updateError) {
+        console.error('Erro ao vincular customer id:', updateError);
+        // Não travamos o fluxo aqui, mas logamos
+      }
     }
 
     const session = await stripe.checkout.sessions.create({
-      mode: 'payment',                     // pagamento único
-      payment_method_types: ['pix'],       // só PIX
+      mode: 'payment',
+      payment_method_types: ['pix'],
       customer: customerId,
       line_items: [
         {
@@ -85,7 +91,11 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ url: session.url });
   } catch (err) {
-    console.error('Erro ao criar sessão PIX:', err);
-    return res.status(500).json({ error: 'Erro interno ao criar cobrança PIX.' });
+    console.error('Erro detalhado PIX:', err);
+    return res.status(500).json({ 
+      error: 'Erro ao criar cobrança PIX.',
+      message: err.message,
+      details: err.raw?.message || err.toString()
+    });
   }
 }

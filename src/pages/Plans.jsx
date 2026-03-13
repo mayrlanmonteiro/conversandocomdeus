@@ -76,8 +76,8 @@ export default function Plans() {
             }
 
             if (!res.ok) {
-                console.error(data.error);
-                alert(`Não foi possível iniciar o pagamento PIX: ${data.error}`);
+                console.error('Erro PIX:', data);
+                alert(`Não foi possível iniciar o pagamento PIX:\n${data.message || 'Erro desconhecido'}\n\nDetalhes: ${data.details || 'Sem mais informações'}`);
                 return;
             }
 
