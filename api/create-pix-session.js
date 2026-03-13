@@ -72,7 +72,6 @@ export default async function handler(req, res) {
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
-      payment_method_types: ['pix'],
       customer: customerId,
       line_items: [
         {
@@ -80,6 +79,9 @@ export default async function handler(req, res) {
           quantity: 1,
         },
       ],
+      automatic_payment_methods: {
+        enabled: true,
+      },
       metadata: {
         userId: user.id,
         planType,
