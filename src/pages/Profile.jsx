@@ -51,7 +51,16 @@ export default function Profile() {
                     full_name: user.user_metadata?.full_name || '',
                     email: user.email
                 });
-                setIsPremium(user.user_metadata?.is_premium || false);
+
+                // Verificar status premium na tabela profiles
+                const { data: profileData } = await supabase
+                    .from('profiles')
+                    .select('subscription_status, plan')
+                    .eq('id', user.id)
+                    .single();
+
+                const hasActivePlan = profileData?.subscription_status === 'active';
+                setIsPremium(hasActivePlan || user.user_metadata?.is_premium || false);
 
                 // Carregar contagem de mensagens
                 const { count, error: countError } = await supabase

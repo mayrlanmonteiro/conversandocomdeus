@@ -23,22 +23,13 @@ export default function Plans() {
     const handleSubscribe = async (priceType) => {
         try {
             setLoading(true);
-            const priceId = priceType === 'monthly' 
-                ? import.meta.env.VITE_STRIPE_PRICE_MONTHLY 
-                : import.meta.env.VITE_STRIPE_PRICE_YEARLY;
-
-            if (!priceId) {
-                alert('Configuração de preços não encontrada no .env');
-                return;
-            }
 
             const response = await fetch('/api/create-checkout-session', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    priceId,
-                    userId: user.id,
-                    userEmail: user.email,
+                    planType: priceType, // 'monthly' ou 'yearly'
+                    userId: user.id
                 }),
             });
 

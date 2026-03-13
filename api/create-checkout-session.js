@@ -1,9 +1,9 @@
 /* global process */
 import Stripe from 'stripe';
-// import { supabaseAdmin as supabase } from './_supabaseAdmin'; // Reserved for future user data fetching
+import { supabaseAdmin } from './_supabaseAdmin';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2023-10-16',
+  apiVersion: '2024-06-20',
 });
 
 export default async function handler(req, res) {
@@ -13,16 +13,71 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { priceId, userId, userEmail } = req.body;
+    const { planType, userId } = req.body;
 
-    if (!priceId || !userId || !userEmail) {
-      return res.status(400).json({ error: 'Dados incompletos para criar a sessão.' });
+    if (!planType || !userId) {
+      return res.status(400).json({ error: 'Dados incompletos.' });
+    }
+
+    // Buscar usuário e e-mail no Supabase (garante que userId é válido)
+    const {
+      data: { user },
+      error: userError,
+    } = await supabaseAdmin.auth.admin.getUserById(userId);
+
+    if (userError || !user) {
+      console.error(userError);
+      return res.status(404).json({ error: 'Usuário não encontrado.' });
+    }
+
+    const priceId =
+      planType === 'monthly'
+        ? (process.env.STRIPE_PRICE_MONTHLY || process.env.VITE_STRIPE_PRICE_MONTHLY)
+        : (process.env.STRIPE_PRICE_YEARLY || process.env.VITE_STRIPE_PRICE_YEARLY);
+
+    if (!priceId) {
+      return res.status(500).json({ error: 'Configuração de preços (Price IDs) não encontrada no ambiente.' });
+    }
+
+    // Verificar se já temos stripe_customer_id no perfil
+    // Nota: Tentamos buscar, se falhar (tabela não existe), trataremos no catch
+    const { data: profile, error: profileError } = await supabaseAdmin
+      .from('profiles')
+      .select('stripe_customer_id')
+      .eq('id', userId)
+      .single();
+
+    if (profileError && profileError.code !== 'PGRST116') {
+      console.error('Erro ao buscar profile:', profileError);
+    }
+
+    let customerId = profile?.stripe_customer_id;
+
+    if (!customerId) {
+      // Criar customer no Stripe
+      const customer = await stripe.customers.create({
+        email: user.email,
+        metadata: {
+          supabaseUserId: user.id,
+        },
+      });
+      customerId = customer.id;
+
+      // Tenta atualizar/inserir no profile. 
+      // Upsert garante que se o profile não existir, ele cria.
+      await supabaseAdmin
+        .from('profiles')
+        .upsert({ 
+          id: user.id, 
+          stripe_customer_id: customerId,
+          email: user.email 
+        });
     }
 
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
-      customer_email: userEmail,
+      customer: customerId,
       line_items: [
         {
           price: priceId,
@@ -30,7 +85,8 @@ export default async function handler(req, res) {
         },
       ],
       metadata: {
-        userId,
+        userId: user.id,
+        planType,
       },
       success_url: `${req.headers.origin}/profile?session_id={CHECKOUT_SESSION_ID}&success=true`,
       cancel_url: `${req.headers.origin}/profile?canceled=true`,

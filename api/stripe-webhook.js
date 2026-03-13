@@ -1,9 +1,9 @@
 /* global process, Buffer */
 import Stripe from 'stripe';
-import { supabaseAdmin as supabase } from './_supabaseAdmin';
+import { supabaseAdmin } from './_supabaseAdmin';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2023-10-16',
+  apiVersion: '2024-06-20',
 });
 
 export const config = {
@@ -39,41 +39,58 @@ export default async function handler(req, res) {
       case 'checkout.session.completed': {
         const session = event.data.object;
         const userId = session.metadata?.userId;
+        const planType = session.metadata?.planType;
         const subscriptionId = session.subscription;
         const customerId = session.customer;
 
-        // Ativa o premium no banco de dados (Auth Metadata ou Tabela Profiles)
-        // Aqui estamos atualizando os metadados do usuário via Supabase Admin (Service Role)
-        await supabase.auth.admin.updateUserById(userId, {
-            user_metadata: { 
-                is_premium: true,
-                stripe_customer_id: customerId,
-                stripe_subscription_id: subscriptionId
-            }
+        if (!userId || !subscriptionId || !customerId) break;
+
+        // Atualizar tabela profiles
+        await supabaseAdmin
+          .from('profiles')
+          .update({
+            stripe_customer_id: customerId,
+            stripe_subscription_id: subscriptionId,
+            plan: planType || null,
+            subscription_status: 'active',
+          })
+          .eq('id', userId);
+
+        // Opcional: Manter cópia nos metadados para facilitar leitura no front se necessário
+        await supabaseAdmin.auth.admin.updateUserById(userId, {
+            user_metadata: { is_premium: true }
         });
         
-        console.log(`Usuário ${userId} agora é Premium.`);
+        console.log(`Assinatura completada para o usuário ${userId}`);
         break;
       }
+
+      case 'customer.subscription.updated':
       case 'customer.subscription.deleted': {
         const subscription = event.data.object;
-        // Precisamos encontrar o usuário pelo customerId
-        // Alternativamente, a subscription pode ter metadados se passados na criação
-        // Vamos buscar o usuário que tem esse subscription_id
-        
-        const { data: users } = await supabase.auth.admin.listUsers();
-        const targetUser = users?.users.find(u => u.user_metadata?.stripe_subscription_id === subscription.id);
+        const subscriptionId = subscription.id;
+        const status = subscription.status; // 'active', 'canceled', 'past_due', etc.
 
-        if (targetUser) {
-            await supabase.auth.admin.updateUserById(targetUser.id, {
-                user_metadata: { is_premium: false }
+        // Atualizar status onde stripe_subscription_id = subscription.id
+        const { data: updated } = await supabaseAdmin
+          .from('profiles')
+          .update({ subscription_status: status })
+          .eq('stripe_subscription_id', subscriptionId)
+          .select();
+
+        if (updated && updated.length > 0) {
+            const userId = updated[0].id;
+            const isPremium = status === 'active';
+            await supabaseAdmin.auth.admin.updateUserById(userId, {
+                user_metadata: { is_premium: isPremium }
             });
-            console.log(`Assinatura de ${targetUser.id} cancelada.`);
+            console.log(`Status da assinatura do usuário ${userId} atualizado para: ${status}`);
         }
         break;
       }
+
       default:
-        console.log(`Unhandled event type ${event.type}`);
+        console.log(`Event type não tratado: ${event.type}`);
     }
 
     res.status(200).send('ok');
@@ -83,7 +100,7 @@ export default async function handler(req, res) {
   }
 }
 
-// Helper para ler o raw body (necessário para o Stripe validar a assinatura)
+// Helper para ler o raw body
 async function buffer(readable) {
   const chunks = [];
   for await (const chunk of readable) {
