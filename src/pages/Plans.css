@@ -1,0 +1,185 @@
+/* Plans Page - Premium Design */
+.plans-page {
+    min-height: 100vh;
+    background-color: #F9FAFB;
+    padding-top: calc(var(--header-height) + 60px);
+    padding-bottom: 100px;
+}
+
+.plans-header {
+    max-width: 700px;
+    margin: 0 auto 60px;
+}
+
+.badge-premium {
+    display: inline-block;
+    padding: 6px 16px;
+    background: #E0F2FE;
+    color: #0284C7;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+}
+
+.plans-header h1 {
+    font-size: 3rem;
+    color: #111827;
+    margin-bottom: 20px;
+    font-weight: 800;
+}
+
+.plans-header .subtitle {
+    font-size: 1.25rem;
+    color: #4B5563;
+}
+
+/* Plans Grid */
+.plans-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    max-width: 900px;
+    margin: 0 auto 60px;
+}
+
+.plan-card {
+    background: #FFFFFF;
+    border-radius: 32px;
+    padding: 48px;
+    border: 1px solid #E5E7EB;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.plan-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    border-color: #2563EB;
+}
+
+.plan-featured {
+    border: 2px solid #2563EB;
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.1);
+}
+
+.featured-label {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: #2563EB;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.plan-icon-box {
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.plan-icon-box.blue { background: #E0F2FE; color: #0284C7; }
+.plan-icon-box.gold { background: #FEF3C7; color: #B45309; }
+
+.plan-icon-inner {
+    width: 32px;
+    height: 32px;
+}
+
+.plan-card h3 {
+    font-size: 1.5rem;
+    color: #111827;
+    margin-bottom: 16px;
+    font-weight: 700;
+}
+
+.plan-price-box {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 20px;
+}
+
+.plan-price-box .price {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #111827;
+}
+
+.plan-price-box .period {
+    color: #6B7280;
+    font-weight: 500;
+}
+
+.plan-desc {
+    color: #6B7280;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 32px;
+    flex-grow: 0;
+}
+
+.plan-features {
+    flex-grow: 1;
+    margin-bottom: 40px;
+}
+
+.plan-features ul {
+    list-style: none;
+    padding: 0;
+}
+
+.plan-features li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    color: #374151;
+    font-weight: 500;
+}
+
+.check-icon {
+    color: #10B981;
+    flex-shrink: 0;
+}
+
+.plan-footer .btn-full {
+    width: 100%;
+    padding: 16px;
+    border-radius: 16px;
+    font-size: 1.125rem;
+}
+
+/* Trust Section */
+.plans-trust {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    color: #9CA3AF;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.trust-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .plans-header h1 { font-size: 2.25rem; }
+    .plans-grid { grid-template-columns: 1fr; padding: 20px; }
+    .plan-card { padding: 32px; }
+    .plans-trust { flex-direction: column; gap: 16px; }
+}

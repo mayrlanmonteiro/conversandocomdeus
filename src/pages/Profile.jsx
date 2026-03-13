@@ -22,6 +22,17 @@ export default function Profile() {
     });
     const [status, setStatus] = useState({ type: '', message: '' });
     const [bookmarks, setBookmarks] = useState([]);
+    const [isPremium, setIsPremium] = useState(false);
+
+    useEffect(() => {
+        // Verificar se retornou do Stripe com sucesso
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('success')) {
+            setStatus({ type: 'success', message: 'Parabéns! Sua assinatura Premium foi ativada com sucesso. Aproveite todos os recursos!' });
+        } else if (params.get('canceled')) {
+            setStatus({ type: 'error', message: 'O checkout foi cancelado. Você pode tentar novamente quando desejar.' });
+        }
+    }, []);
 
     useEffect(() => {
         async function getProfile() {
@@ -40,6 +51,7 @@ export default function Profile() {
                     full_name: user.user_metadata?.full_name || '',
                     email: user.email
                 });
+                setIsPremium(user.user_metadata?.is_premium || false);
 
                 // Carregar contagem de mensagens
                 const { count, error: countError } = await supabase
@@ -143,6 +155,7 @@ export default function Profile() {
                     {/* CABEÇALHO DE INFO */}
                     <div className="profile-header-premium">
                         <div className="profile-main-info">
+                            {isPremium && <span className="premium-badge-float"><Crown size={12} /> PREMIUM</span>}
                             <h1>{profile.full_name || 'Irmão(ã) em Cristo'}</h1>
                             <p className="p-email">{user.email}</p>
                             <p className="p-member-since">
@@ -151,6 +164,12 @@ export default function Profile() {
                         </div>
                         
                         <div className="profile-header-actions">
+                            {!isPremium && (
+                                <button className="btn-upgrade-premium" onClick={() => navigate('/planos')}>
+                                    <Crown size={18} />
+                                    <span>Seja Premium</span>
+                                </button>
+                            )}
                             <button className="btn-edit-shortcut" onClick={scrollToEdit}>
                                 <Edit3 size={18} />
                                 <span>Editar Perfil</span>

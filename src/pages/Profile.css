@@ -128,6 +128,43 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+.btn-upgrade-premium {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    border: none;
+    border-radius: 20px;
+    color: white;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3);
+}
+
+.btn-upgrade-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(217, 119, 6, 0.5);
+}
+
+.premium-badge-float {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: #FEF3C7;
+    color: #B45309;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+
 /* Stats Grid */
 .profile-stats-grid {
     display: grid;
