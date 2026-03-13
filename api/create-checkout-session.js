@@ -1,6 +1,6 @@
 /* global process */
 import Stripe from 'stripe';
-import { supabaseAdmin } from './_supabaseAdmin';
+import { supabaseAdmin } from './_supabaseAdmin.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2024-06-20',
@@ -10,6 +10,10 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  if (!supabaseAdmin) {
+    return res.status(500).json({ error: 'Erro interno: Supabase Admin não configurado corretamente na Vercel.' });
   }
 
   try {

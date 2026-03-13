@@ -28,18 +28,25 @@ export default function Plans() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    planType: priceType, // 'monthly' ou 'yearly'
+                    planType: priceType,
                     userId: user.id
                 }),
             });
 
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error);
+            const responseText = await response.text();
+            let data;
+            try {
+                data = JSON.parse(responseText);
+            } catch {
+                throw new Error(`O servidor retornou um erro não esperado (HTML/Texto): ${responseText.substring(0, 100)}...`);
+            }
+
+            if (!response.ok) throw new Error(data.error || 'Erro desconhecido no servidor');
 
             window.location.href = data.url;
         } catch (err) {
             console.error('Erro no checkout:', err);
-            alert(`Erro ao iniciar checkout: ${err.message || 'Erro desconhecido'}`);
+            alert(`Erro ao iniciar checkout: ${err.message}`);
         } finally {
             setLoading(false);
         }
