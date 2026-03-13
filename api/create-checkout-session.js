@@ -1,7 +1,9 @@
+/* global process */
 import Stripe from 'stripe';
+// import { supabaseAdmin as supabase } from './_supabaseAdmin'; // Reserved for future user data fetching
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2023-10-16', // Using a stable version
+  apiVersion: '2023-10-16',
 });
 
 export default async function handler(req, res) {
