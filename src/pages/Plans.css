@@ -2,8 +2,11 @@
 .plans-page {
     min-height: 100vh;
     background-color: #F9FAFB;
-    padding-top: calc(var(--header-height) + 40px);
     padding-bottom: 100px;
+}
+
+.plans-container {
+    padding-top: 60px;
 }
 
 .plans-header {
