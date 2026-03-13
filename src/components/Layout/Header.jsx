@@ -6,7 +6,7 @@ import './Header.css';
 
 export default function Header() {
     const location = useLocation();
-    const isLightMode = location.pathname === '/chat' || location.pathname === '/profile';
+    const isLightMode = location.pathname === '/chat' || location.pathname === '/profile' || location.pathname === '/planos';
     const [user, setUser] = useState(null);
     const [scrolled, setScrolled] = useState(false);
 
