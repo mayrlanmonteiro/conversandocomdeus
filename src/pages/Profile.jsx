@@ -5,7 +5,7 @@ import Header from '../components/Layout/Header';
 import { 
     User, Mail, Calendar, Save, CheckCircle, AlertCircle, 
     MessageSquare, Bookmark, Trash2, Heart, Sparkles, 
-    ChevronRight, Book, Clock, Settings, Edit3
+    ChevronRight, Book, Clock, Settings, Edit3, Crown, Quote
 } from 'lucide-react';
 import './Profile.css';
 
