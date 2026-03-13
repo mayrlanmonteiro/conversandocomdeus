@@ -38,8 +38,8 @@ export default function Plans() {
 
             window.location.href = data.url;
         } catch (err) {
-            console.error(err);
-            alert('Não foi possível iniciar o checkout. Verifique se as chaves do Stripe estão configuradas na Vercel.');
+            console.error('Erro no checkout:', err);
+            alert(`Erro ao iniciar checkout: ${err.message || 'Erro desconhecido'}`);
         } finally {
             setLoading(false);
         }
