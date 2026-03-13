@@ -7,8 +7,10 @@ import SuggestionChips from '../components/Chat/SuggestionChips';
 import Header from '../components/Layout/Header';
 import { sendMessageStream } from '../services/ai';
 import { supabase } from '../lib/supabase';
-import { ShieldCheck, RefreshCw, Sparkles, AlertCircle, Menu, X, MessageSquare, Trash2, Plus } from 'lucide-react';
+import { ShieldCheck, RefreshCw, Sparkles, AlertCircle, Menu, X, MessageSquare, Trash2, Plus, Crown } from 'lucide-react';
+import LimitModal from '../components/Chat/LimitModal';
 import './Chat.css';
+import '../components/Chat/LimitModal.css';
 
 const Chat = () => {
     const [messages, setMessages] = useState([]);
@@ -22,6 +24,11 @@ const Chat = () => {
     const [activeConversationId, setActiveConversationId] = useState(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [bookmarks, setBookmarks] = useState([]);
+    const [isPremium, setIsPremium] = useState(false);
+    const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
+    const [messageCountToday, setMessageCountToday] = useState(0);
+
+    const DAILY_LIMIT = 5; // Limite de mensagens por dia para usuários gratuitos
 
     const messagesEndRef = useRef(null);
 
@@ -106,6 +113,43 @@ const Chat = () => {
         }
     };
 
+    const checkPremiumStatus = async (currentUser) => {
+        if (!currentUser) return;
+        
+        // Primeiro checar metadados (rápido)
+        if (currentUser.user_metadata?.is_premium) {
+            setIsPremium(true);
+            return;
+        }
+
+        // Depois checar tabela profiles (oficial)
+        const { data } = await supabase
+            .from('profiles')
+            .select('subscription_status')
+            .eq('id', currentUser.id)
+            .single();
+        
+        if (data?.subscription_status === 'active') {
+            setIsPremium(true);
+        }
+    };
+
+    const fetchMessageCount = async (userId) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const { count, error } = await supabase
+            .from('chat_messages')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', userId)
+            .eq('role', 'user')
+            .gte('created_at', today.toISOString());
+
+        if (!error) {
+            setMessageCountToday(count || 0);
+        }
+    };
+
     // Verificar autenticação e carregar histórico
     useEffect(() => {
         const checkUser = async () => {
@@ -123,11 +167,14 @@ const Chat = () => {
             if (session?.user) {
                 fetchConversations(session.user.id);
                 fetchBookmarks(session.user.id);
+                checkPremiumStatus(session.user);
+                fetchMessageCount(session.user.id);
             } else {
                 setMessages([]);
                 setConversations([]);
                 setActiveConversationId(null);
                 setBookmarks([]);
+                setIsPremium(false);
             }
         });
 
@@ -150,6 +197,12 @@ const Chat = () => {
     const sendMessage = async (text) => {
         const messageText = text || inputValue;
         if (!messageText.trim() || isLoading) return;
+
+        // Verificar limite para usuários não premium
+        if (!isPremium && messageCountToday >= DAILY_LIMIT) {
+            setIsLimitModalOpen(true);
+            return;
+        }
 
         const userMessage = { role: 'user', content: messageText.trim() };
 
@@ -202,6 +255,11 @@ const Chat = () => {
 
                     // Persistir resposta do assistente
                     saveMessage('assistant', accumulated, user?.id, currentConvId);
+                    
+                    // Incrementar contador local
+                    if (!isPremium) {
+                        setMessageCountToday(prev => prev + 1);
+                    }
 
                     // Atualizar o timestamp da conversa
                     if (currentConvId) {
@@ -423,6 +481,23 @@ const Chat = () => {
                     </main>
 
                     <footer className="chat-panel-footer">
+                        {!isPremium && user && (
+                            <div className="usage-indicator animate-fade-in">
+                                <div className="usage-progress-text">
+                                    <span>{Math.max(0, DAILY_LIMIT - messageCountToday)} de {DAILY_LIMIT} mensagens gratuitas restantes</span>
+                                    <Link to="/planos" className="upgrade-link">
+                                        <Crown size={14} />
+                                        Seja Premium
+                                    </Link>
+                                </div>
+                                <div className="usage-bar">
+                                    <div 
+                                        className="usage-bar-fill" 
+                                        style={{ width: `${Math.min(100, (messageCountToday / DAILY_LIMIT) * 100)}%` }}
+                                    ></div>
+                                </div>
+                            </div>
+                        )}
                         <div className="input-container-premium">
                             <MessageInput
                                 value={inputValue}
@@ -437,6 +512,11 @@ const Chat = () => {
                     </footer>
                 </div>
             </div>
+            {/* Modal de Limite (Paywall) */}
+            <LimitModal 
+                isOpen={isLimitModalOpen} 
+                onClose={() => setIsLimitModalOpen(false)} 
+            />
         </div>
     );
 }

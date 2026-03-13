@@ -590,3 +590,52 @@
 .btn-retry-inline:hover {
     opacity: 0.9;
 }
+
+/* --- Usage Indicator (Free Users) --- */
+.usage-indicator {
+    padding: 0 40px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.usage-progress-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.upgrade-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--primary-gold);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition-fast);
+}
+
+.upgrade-link:hover {
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+}
+
+.usage-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.usage-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-blue), var(--primary-gold));
+    transition: width 0.5s ease-out;
+}
+
+@media (max-width: 768px) {
+    .usage-indicator {
+        padding: 0 20px 10px;
+    }
+}
