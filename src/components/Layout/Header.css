@@ -47,6 +47,17 @@
     border: 2px solid #E5E7EB;
 }
 
+.header.is-light .btn-secondary {
+    background: rgba(0, 0, 0, 0.05);
+    color: #4B5563;
+    border: 1px solid #E5E7EB;
+}
+
+.header.is-light .btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #111827;
+}
+
 .header-inner {
     display: flex;
     align-items: center;
