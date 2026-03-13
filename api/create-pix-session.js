@@ -70,8 +70,20 @@ export default async function handler(req, res) {
       }
     }
 
+    // Verificar se o preço existe no Stripe antes de criar a sessão
+    try {
+      await stripe.prices.retrieve(priceId);
+    } catch (e) {
+      return res.status(400).json({ 
+        error: 'ID de Preço Inválido', 
+        message: `O ID de preço ${priceId} não foi encontrado na sua conta Stripe. Verifique se ele foi criado no modo LIVE.`,
+        details: e.message 
+      });
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
+      payment_method_types: ['pix'],
       customer: customerId,
       line_items: [
         {
@@ -79,9 +91,6 @@ export default async function handler(req, res) {
           quantity: 1,
         },
       ],
-      automatic_payment_methods: {
-        enabled: true,
-      },
       metadata: {
         userId: user.id,
         planType,
