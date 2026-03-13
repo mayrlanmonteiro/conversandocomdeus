@@ -29,19 +29,22 @@
 }
 
 .sidebar-header {
-    padding: 24px;
+    padding: 12px 12px 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    border-bottom: 1px solid var(--border-light);
 }
 
-.sidebar-header h2 {
-    font-size: 0.9rem;
+.sidebar-list-title {
+    padding: 0 20px 10px;
+    margin: 10px 0 5px;
+    font-size: 0.85rem;
     font-weight: 700;
     color: var(--text-dark);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    font-family: var(--font-serif);
+    border-bottom: 1px solid var(--border-light);
 }
 
 .sidebar-close-btn {

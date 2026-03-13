@@ -366,7 +366,6 @@ const Chat = () => {
                 {/* Sidebar com Histórico */}
                 <aside className={`chat-sidebar ${isSidebarOpen ? 'open' : ''}`}>
                     <div className="sidebar-header">
-                        <h2>Histórico</h2>
                         <button className="sidebar-close-btn" onClick={() => setIsSidebarOpen(false)}>
                             <X size={20} />
                         </button>
@@ -376,6 +375,8 @@ const Chat = () => {
                         <Plus size={18} />
                         Nova Conversa
                     </button>
+
+                    <h3 className="sidebar-list-title">Histórico</h3>
 
                     <div className="conversations-list">
                         {!user ? (
