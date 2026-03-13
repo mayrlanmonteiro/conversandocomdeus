@@ -173,6 +173,19 @@
     background-color: #E5E7EB !important;
 }
 
+.plan-footer .btn-pix {
+    margin-top: 12px;
+    background-color: #FFFFFF !important;
+    color: #0d9488 !important; /* Teal for PIX */
+    border: 1px solid #0d9488 !important;
+    font-size: 0.95rem;
+    padding: 12px;
+}
+
+.plan-footer .btn-pix:hover {
+    background-color: #f0fdfa !important;
+}
+
 /* Trust Section */
 .plans-trust {
     display: flex;

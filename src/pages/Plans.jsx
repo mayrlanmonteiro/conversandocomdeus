@@ -8,6 +8,7 @@ import './Plans.css';
 export default function Plans() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [isLoadingPix, setIsLoadingPix] = useState(false);
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -49,6 +50,43 @@ export default function Plans() {
             alert(`Erro ao iniciar checkout: ${err.message}`);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handlePix = async (planType) => {
+        if (!user) {
+            alert('Você precisa estar logado para assinar.');
+            return;
+        }
+
+        try {
+            setIsLoadingPix(true);
+            const res = await fetch('/api/create-pix-session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ planType, userId: user.id }),
+            });
+
+            const responseText = await res.text();
+            let data;
+            try {
+                data = JSON.parse(responseText);
+            } catch {
+                throw new Error(`Erro ao gerar PIX: O servidor retornou resposta inválida.`);
+            }
+
+            if (!res.ok) {
+                console.error(data.error);
+                alert(`Não foi possível iniciar o pagamento PIX: ${data.error}`);
+                return;
+            }
+
+            window.location.href = data.url; // redireciona para o Checkout (QR Code PIX)
+        } catch (err) {
+            console.error(err);
+            alert(`Erro inesperado ao iniciar pagamento PIX: ${err.message}`);
+        } finally {
+            setIsLoadingPix(false);
         }
     };
 
@@ -130,9 +168,17 @@ export default function Plans() {
                                 <button 
                                     className={`btn ${plan.highlight ? 'btn-primary' : 'btn-secondary'} btn-full`}
                                     onClick={() => handleSubscribe(plan.id)}
-                                    disabled={loading}
+                                    disabled={loading || isLoadingPix}
                                 >
                                     {loading ? 'Processando...' : plan.buttonText}
+                                </button>
+                                
+                                <button
+                                    className="btn btn-pix btn-full"
+                                    onClick={() => handlePix(plan.id)}
+                                    disabled={loading || isLoadingPix}
+                                >
+                                    {isLoadingPix ? 'Gerando PIX...' : 'Pagar com PIX (À vista)'}
                                 </button>
                             </div>
                         </div>

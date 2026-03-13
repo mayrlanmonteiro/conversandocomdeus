@@ -116,22 +116,30 @@ const Chat = () => {
     const checkPremiumStatus = async (currentUser) => {
         if (!currentUser) return;
         
-        // Primeiro checar metadados (rápido)
-        if (currentUser.user_metadata?.is_premium) {
-            setIsPremium(true);
-            return;
-        }
-
-        // Depois checar tabela profiles (oficial)
+        // Checar tabela profiles (oficial)
         const { data } = await supabase
             .from('profiles')
-            .select('subscription_status')
+            .select('subscription_status, billing_method, active_until')
             .eq('id', currentUser.id)
             .single();
         
-        if (data?.subscription_status === 'active') {
-            setIsPremium(true);
+        if (!data) return;
+
+        let premium = false;
+
+        if (data.subscription_status === 'active') {
+            if (data.billing_method === 'pix') {
+                // Para PIX, conferir se ainda está no prazo
+                if (data.active_until && new Date(data.active_until) > new Date()) {
+                    premium = true;
+                }
+            } else {
+                // Para Cartão (subscription), se está active, está valendo
+                premium = true;
+            }
         }
+
+        setIsPremium(premium);
     };
 
     const fetchMessageCount = async (userId) => {

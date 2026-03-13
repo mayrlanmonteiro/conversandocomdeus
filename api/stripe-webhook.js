@@ -40,28 +40,72 @@ export default async function handler(req, res) {
         const session = event.data.object;
         const userId = session.metadata?.userId;
         const planType = session.metadata?.planType;
+        const billingMethod = session.metadata?.billingMethod;
         const subscriptionId = session.subscription;
         const customerId = session.customer;
 
-        if (!userId || !subscriptionId || !customerId) break;
+        if (!userId) break;
 
-        // Atualizar tabela profiles
-        await supabaseAdmin
-          .from('profiles')
-          .update({
-            stripe_customer_id: customerId,
-            stripe_subscription_id: subscriptionId,
-            plan: planType || null,
-            subscription_status: 'active',
-          })
-          .eq('id', userId);
+        // Se for PIX (pagamento único)
+        if (billingMethod === 'pix') {
+          if (session.payment_status === 'paid') {
+            const now = new Date();
+            const activeUntil = new Date(now);
 
-        // Opcional: Manter cópia nos metadados para facilitar leitura no front se necessário
-        await supabaseAdmin.auth.admin.updateUserById(userId, {
-            user_metadata: { is_premium: true }
-        });
-        
-        console.log(`Assinatura completada para o usuário ${userId}`);
+            if (planType === 'monthly') {
+              activeUntil.setMonth(activeUntil.getMonth() + 1);
+            } else {
+              activeUntil.setFullYear(activeUntil.getFullYear() + 1);
+            }
+
+            await supabaseAdmin
+              .from('profiles')
+              .update({
+                plan: planType,
+                billing_method: 'pix',
+                subscription_status: 'active',
+                active_until: activeUntil.toISOString(),
+                stripe_customer_id: customerId,
+              })
+              .eq('id', userId);
+
+            await supabaseAdmin.auth.admin.updateUserById(userId, {
+              user_metadata: { 
+                is_premium: true,
+                billing_method: 'pix',
+                plan: planType
+              }
+            });
+
+            console.log(`Pagamento PIX completado para o usuário ${userId}. Ativo até ${activeUntil.toISOString()}`);
+          }
+          break;
+        }
+
+        // Se for assinatura normal (cartão)
+        if (session.mode === 'subscription' && subscriptionId) {
+          await supabaseAdmin
+            .from('profiles')
+            .update({
+              stripe_customer_id: customerId,
+              stripe_subscription_id: subscriptionId,
+              plan: planType || null,
+              subscription_status: 'active',
+              billing_method: 'card',
+              active_until: null, // Resetar pois é recorrência
+            })
+            .eq('id', userId);
+
+          await supabaseAdmin.auth.admin.updateUserById(userId, {
+            user_metadata: { 
+              is_premium: true,
+              billing_method: 'card',
+              plan: planType
+            }
+          });
+          
+          console.log(`Assinatura (Cartão) completada para o usuário ${userId}`);
+        }
         break;
       }
 
