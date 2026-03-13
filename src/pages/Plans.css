@@ -163,6 +163,16 @@
     font-size: 1.125rem;
 }
 
+.plan-footer .btn-secondary {
+    background-color: #F3F4F6 !important;
+    color: #111827 !important;
+    border: 1px solid #E5E7EB !important;
+}
+
+.plan-footer .btn-secondary:hover {
+    background-color: #E5E7EB !important;
+}
+
 /* Trust Section */
 .plans-trust {
     display: flex;
