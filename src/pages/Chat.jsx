@@ -128,8 +128,8 @@ const Chat = () => {
         let premium = false;
 
         if (data.subscription_status === 'active') {
-            if (data.billing_method === 'pix') {
-                // Para PIX, conferir se ainda está no prazo
+            if (data.billing_method === 'pix' || data.billing_method === 'pix_mp') {
+                // Para PIX (Stripe ou Mercado Pago), conferir se ainda está no prazo
                 if (data.active_until && new Date(data.active_until) > new Date()) {
                     premium = true;
                 }

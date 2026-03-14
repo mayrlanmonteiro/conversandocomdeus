@@ -61,7 +61,7 @@ export default function Plans() {
 
         try {
             setIsLoadingPix(true);
-            const res = await fetch('/api/create-pix-session', {
+            const res = await fetch('/api/create-pix-mp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ planType, userId: user.id }),
@@ -77,7 +77,7 @@ export default function Plans() {
 
             if (!res.ok) {
                 console.error('Erro PIX:', data);
-                alert(`Não foi possível iniciar o pagamento PIX:\n${data.message || 'Erro desconhecido'}\n\nDetalhes: ${data.details || 'Sem mais informações'}`);
+                alert(`Não foi possível iniciar o pagamento PIX via Mercado Pago:\n${data.message || 'Erro desconhecido'}`);
                 return;
             }
 
@@ -188,7 +188,7 @@ export default function Plans() {
                 <div className="plans-trust text-center">
                     <div className="trust-item">
                         <Shield size={20} />
-                        <span>Pagamento seguro via Stripe</span>
+                        <span>Pagamento seguro via Stripe & Mercado Pago</span>
                     </div>
                     <div className="trust-item">
                         <Sparkles size={20} />
