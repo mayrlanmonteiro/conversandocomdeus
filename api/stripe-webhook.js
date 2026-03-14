@@ -2,147 +2,9 @@
 import Stripe from 'stripe';
 import { supabaseAdmin } from './_supabaseAdmin.js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2024-06-20',
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-06-20' });
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).send('Method Not Allowed');
-  }
-
-  const sig = req.headers['stripe-signature'];
-  if (!sig) return res.status(400).send('Missing Stripe signature');
-
-  let event;
-
-  try {
-    const buf = await buffer(req);
-    event = stripe.webhooks.constructEvent(
-      buf,
-      sig.toString(),
-      process.env.STRIPE_WEBHOOK_SECRET
-    );
-  } catch (err) {
-    console.error('Erro no webhook Stripe:', err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
-  }
-
-  try {
-    switch (event.type) {
-      case 'checkout.session.completed': {
-        const session = event.data.object;
-        const userId = session.metadata?.userId;
-        const planType = session.metadata?.planType;
-        const billingMethod = session.metadata?.billingMethod;
-        const subscriptionId = session.subscription;
-        const customerId = session.customer;
-
-        if (!userId) break;
-
-        // Se for PIX (pagamento único)
-        if (billingMethod === 'pix') {
-          if (session.payment_status === 'paid') {
-            const now = new Date();
-            const activeUntil = new Date(now);
-
-            if (planType === 'monthly') {
-              activeUntil.setMonth(activeUntil.getMonth() + 1);
-            } else {
-              activeUntil.setFullYear(activeUntil.getFullYear() + 1);
-            }
-
-            await supabaseAdmin
-              .from('profiles')
-              .update({
-                plan: planType,
-                billing_method: 'pix',
-                subscription_status: 'active',
-                active_until: activeUntil.toISOString(),
-                stripe_customer_id: customerId,
-              })
-              .eq('id', userId);
-
-            await supabaseAdmin.auth.admin.updateUserById(userId, {
-              user_metadata: { 
-                is_premium: true,
-                billing_method: 'pix',
-                plan: planType
-              }
-            });
-
-            console.log(`Pagamento PIX completado para o usuário ${userId}. Ativo até ${activeUntil.toISOString()}`);
-          }
-          break;
-        }
-
-        // Se for assinatura normal (cartão)
-        if (session.mode === 'subscription' && subscriptionId) {
-          await supabaseAdmin
-            .from('profiles')
-            .update({
-              stripe_customer_id: customerId,
-              stripe_subscription_id: subscriptionId,
-              plan: planType || null,
-              subscription_status: 'active',
-              billing_method: 'card',
-              active_until: null, // Resetar pois é recorrência
-            })
-            .eq('id', userId);
-
-          await supabaseAdmin.auth.admin.updateUserById(userId, {
-            user_metadata: { 
-              is_premium: true,
-              billing_method: 'card',
-              plan: planType
-            }
-          });
-          
-          console.log(`Assinatura (Cartão) completada para o usuário ${userId}`);
-        }
-        break;
-      }
-
-      case 'customer.subscription.updated':
-      case 'customer.subscription.deleted': {
-        const subscription = event.data.object;
-        const subscriptionId = subscription.id;
-        const status = subscription.status; // 'active', 'canceled', 'past_due', etc.
-
-        // Atualizar status onde stripe_subscription_id = subscription.id
-        const { data: updated } = await supabaseAdmin
-          .from('profiles')
-          .update({ subscription_status: status })
-          .eq('stripe_subscription_id', subscriptionId)
-          .select();
-
-        if (updated && updated.length > 0) {
-            const userId = updated[0].id;
-            const isPremium = status === 'active';
-            await supabaseAdmin.auth.admin.updateUserById(userId, {
-                user_metadata: { is_premium: isPremium }
-            });
-            console.log(`Status da assinatura do usuário ${userId} atualizado para: ${status}`);
-        }
-        break;
-      }
-
-      default:
-        console.log(`Event type não tratado: ${event.type}`);
-    }
-
-    res.status(200).send('ok');
-  } catch (err) {
-    console.error('Erro ao processar evento do webhook:', err);
-    res.status(500).send('Webhook handler failed');
-  }
-}
+export const config = { api: { bodyParser: false } };
 
 // Helper para ler o raw body
 async function buffer(readable) {
@@ -151,4 +13,110 @@ async function buffer(readable) {
     chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
   }
   return Buffer.concat(chunks);
+}
+
+// Helper: calcula active_until para pagamento único
+function calcActiveUntil(planType) {
+  const d = new Date();
+  planType === 'monthly' ? d.setMonth(d.getMonth() + 1) : d.setFullYear(d.getFullYear() + 1);
+  return d.toISOString();
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).send('Method Not Allowed');
+
+  const sig = req.headers['stripe-signature'];
+  if (!sig) return res.status(400).send('Missing Stripe signature');
+
+  let event;
+  try {
+    const buf = await buffer(req);
+    event = stripe.webhooks.constructEvent(buf, sig, process.env.STRIPE_WEBHOOK_SECRET);
+  } catch (err) {
+    console.error('[Stripe Webhook] Assinatura inválida:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Responde imediatamente para evitar timeout do Stripe
+  res.status(200).send('ok');
+
+  try {
+    switch (event.type) {
+
+      case 'checkout.session.completed': {
+        const session        = event.data.object;
+        const { userId, planType, billingMethod } = session.metadata ?? {};
+        const subscriptionId = session.subscription;
+        const customerId     = session.customer;
+
+        if (!userId) break;
+
+        if (billingMethod === 'pix' && session.payment_status === 'paid') {
+          // Pagamento PIX único via Stripe
+          await Promise.all([
+            supabaseAdmin.from('profiles').update({
+              plan: planType,
+              billing_method: 'pix',
+              subscription_status: 'active',
+              active_until: calcActiveUntil(planType),
+              stripe_customer_id: customerId,
+            }).eq('id', userId),
+
+            supabaseAdmin.auth.admin.updateUserById(userId, {
+              user_metadata: { is_premium: true, billing_method: 'pix', plan: planType },
+            }),
+          ]);
+          console.log(`[Stripe] PIX aprovado: userId=${userId}`);
+          break;
+        }
+
+        if (session.mode === 'subscription' && subscriptionId) {
+          // Assinatura com cartão
+          await Promise.all([
+            supabaseAdmin.from('profiles').update({
+              stripe_customer_id: customerId,
+              stripe_subscription_id: subscriptionId,
+              plan: planType || null,
+              subscription_status: 'active',
+              billing_method: 'card',
+              active_until: null,
+            }).eq('id', userId),
+
+            supabaseAdmin.auth.admin.updateUserById(userId, {
+              user_metadata: { is_premium: true, billing_method: 'card', plan: planType },
+            }),
+          ]);
+          console.log(`[Stripe] Assinatura (cartão) ativada: userId=${userId}`);
+        }
+        break;
+      }
+
+      case 'customer.subscription.updated':
+      case 'customer.subscription.deleted': {
+        const subscription   = event.data.object;
+        const status         = subscription.status;
+
+        const { data: updated } = await supabaseAdmin
+          .from('profiles')
+          .update({ subscription_status: status })
+          .eq('stripe_subscription_id', subscription.id)
+          .select('id');
+
+        if (updated?.length) {
+          const uid = updated[0].id;
+          await supabaseAdmin.auth.admin.updateUserById(uid, {
+            user_metadata: { is_premium: status === 'active' },
+          });
+          console.log(`[Stripe] Assinatura userId=${uid} → status=${status}`);
+        }
+        break;
+      }
+
+      default:
+        // Silencioso em produção
+        break;
+    }
+  } catch (err) {
+    console.error('[Stripe Webhook] Erro ao processar evento:', err.message);
+  }
 }

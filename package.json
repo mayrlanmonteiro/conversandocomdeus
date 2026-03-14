@@ -1,7 +1,7 @@
 {
   "name": "conversando-com-deus",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@supabase/supabase-js": "^2.98.0",
     "@vercel/node": "^5.6.15",
     "lucide-react": "^0.577.0",
@@ -23,7 +24,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
-    "@google/generative-ai": "^0.24.1",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
