@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import Header from '../components/Layout/Header';
-import { Check, Sparkles, Zap, Shield, Crown } from 'lucide-react';
+import { Check, Sparkles, Zap, Shield, Crown, CreditCard, QrCode } from 'lucide-react';
 import './Plans.css';
 
 export default function Plans() {
@@ -106,15 +106,16 @@ export default function Plans() {
             name: 'Plano Mensal',
             price: 'R$ 19,90',
             period: '/ mês',
-            description: 'Ideal para quem quer começar sua jornada espiritual acompanhada.',
+            description: 'Ideal para quem quer começar sua jornada espiritual acompanhada, mês a mês.',
             icon: <Zap className="plan-icon-inner" />,
             features: [
                 'Conversas ilimitadas com a IA',
                 'Acesso a todos os conselhos e orações',
+                'Devocionais e estudos bíblicos personalizados',
                 'Salvar favoritos ilimitados',
-                'Suporte prioritário'
+                'Suporte prioritário por e-mail'
             ],
-            buttonText: 'Começar Agora',
+            buttonText: 'Assinar mensal no cartão',
             highlight: false
         },
         {
@@ -122,16 +123,17 @@ export default function Plans() {
             name: 'Plano Anual',
             price: 'R$ 199,00',
             period: '/ ano',
-            description: 'O melhor valor para um compromisso profundo com sua fé.',
+            description: 'Melhor valor para um compromisso mais profundo e constante com sua fé.',
             icon: <Crown className="plan-icon-inner" />,
             features: [
-                'Tudo do plano mensal',
+                'Tudo o que o plano mensal oferece',
                 '2 meses grátis (economia de R$ 59,80)',
                 'Acesso antecipado a novos recursos',
-                'Badge "Membro Vitalício" no perfil'
+                'Badge especial de "Membro Vitalício"'
             ],
-            buttonText: 'Garantir Oferta',
-            highlight: true
+            buttonText: 'Assinar anual no cartão',
+            highlight: true,
+            economy: 'Equivalente a R$ 16,58 por mês'
         }
     ];
 
@@ -139,13 +141,8 @@ export default function Plans() {
         <div className="plans-page">
             <Header />
             
-            {/* Background Decorations */}
-            <div className="bg-blob blob-1"></div>
-            <div className="bg-blob blob-2"></div>
-            <div className="bg-blob blob-3"></div>
-
-            <main className="plans-container container">
-                <header className="plans-header text-center">
+            <main className="plans-container">
+                <header className="plans-header">
                     <span className="badge-premium">ESCOLHA SUA JORNADA</span>
                     <h1>Transforme sua vida espiritual</h1>
                     <p className="subtitle">Conecte-se com a sabedoria divina através de uma experiência tecnológica premium e acolhedora.</p>
@@ -165,6 +162,7 @@ export default function Plans() {
                                     <span className="price">{plan.price}</span>
                                     <span className="period">{plan.period}</span>
                                 </div>
+                                {plan.economy && <div className="plan-economy">{plan.economy}</div>}
                                 <p className="plan-desc">{plan.description}</p>
                             </div>
 
@@ -181,33 +179,40 @@ export default function Plans() {
 
                             <div className="plan-footer">
                                 <button 
-                                    className={`btn ${plan.highlight ? 'btn-primary' : 'btn-secondary'} btn-full`}
+                                    className={`btn-full ${plan.highlight ? 'btn-gold' : 'btn-primary'}`}
                                     onClick={() => handleSubscribe(plan.id)}
                                     disabled={loading || isLoadingPix}
                                 >
-                                    {loading ? 'Processando...' : plan.buttonText}
+                                    <div className="btn-content">
+                                        <CreditCard size={18} />
+                                        <span>{loading ? 'Processando...' : plan.buttonText}</span>
+                                    </div>
                                 </button>
                                 
                                 <button
-                                    className="btn btn-pix btn-full"
+                                    className="btn-full btn-pix-outline"
                                     onClick={() => handlePix(plan.id)}
                                     disabled={loading || isLoadingPix}
                                 >
-                                    {isLoadingPix ? 'Gerando PIX...' : 'Pagar com PIX (À vista)'}
+                                    <div className="btn-content">
+                                        <QrCode size={18} />
+                                        <span>{isLoadingPix ? 'Gerando PIX...' : 'Pagar à vista com PIX'}</span>
+                                    </div>
                                 </button>
+                                <p className="btn-subtext">Liberação imediata via PIX ou Cartão</p>
                             </div>
                         </div>
                     ))}
                 </div>
 
-                <div className="plans-trust text-center">
+                <div className="plans-trust">
                     <div className="trust-item">
                         <Shield size={20} />
                         <span>Pagamento seguro via Stripe & Mercado Pago</span>
                     </div>
                     <div className="trust-item">
-                        <Sparkles size={20} />
-                        <span>Liberação imediata após o pagamento</span>
+                        <Zap size={20} />
+                        <span>Aprovação instantânea e acesso imediato</span>
                     </div>
                 </div>
             </main>
