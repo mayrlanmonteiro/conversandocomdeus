@@ -1,11 +1,26 @@
 import { supabaseAdmin } from './_supabaseAdmin.js';
 
-const WEEKLY_LIMIT = 20; // Créditos semanais para usuários gratuitos
+const WEEKLY_LIMIT = 20;
 
 export default async function handler(req, res) {
+  // ── PATCH: decrementa 1 crédito no banco (fire-and-forget safe) ──────────
+  if (req.method === 'PATCH') {
+    const { userId } = req.body ?? {};
+    if (!userId) return res.status(400).json({ error: 'userId obrigatório.' });
+
+    const { error } = await supabaseAdmin.rpc('decrement_credits', { p_user_id: userId });
+    if (error) {
+      console.error('[Credits PATCH] Erro ao decrementar:', error.message);
+      return res.status(500).json({ error: 'Erro ao decrementar crédito.' });
+    }
+    return res.status(200).json({ ok: true });
+  }
+
+  // ── POST: verifica e renova créditos se necessário ────────────────────────
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
 
   const { userId } = req.body ?? {};
   if (!userId) {

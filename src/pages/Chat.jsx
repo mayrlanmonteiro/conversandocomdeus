@@ -269,9 +269,15 @@ const Chat = () => {
                     // Persistir resposta do assistente
                     saveMessage('assistant', accumulated, user?.id, currentConvId);
                     
-                    // Decrementar créditos localmente
+                    // Decrementar créditos localmente e no banco
                     if (!isPremium) {
                         setFreeCredits(prev => Math.max(0, (prev ?? WEEKLY_LIMIT) - 1));
+                        // Fire-and-forget: persiste no banco sem bloquear a UI
+                        fetch('/api/credits', {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ userId: user?.id }),
+                        }).catch(err => console.error('Erro ao decrementar crédito:', err));
                     }
 
                     // Atualizar o timestamp da conversa
