@@ -26,9 +26,10 @@ const Chat = () => {
     const [bookmarks, setBookmarks] = useState([]);
     const [isPremium, setIsPremium] = useState(false);
     const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
-    const [messageCountToday, setMessageCountToday] = useState(0);
+    const [freeCredits, setFreeCredits] = useState(null);
+    const [nextResetAt, setNextResetAt] = useState(null);
 
-    const DAILY_LIMIT = 5; // Limite de mensagens por dia para usuários gratuitos
+    const WEEKLY_LIMIT = 20; // Créditos que renovam a cada 7 dias
 
     const messagesEndRef = useRef(null);
 
@@ -146,19 +147,19 @@ const Chat = () => {
         setIsPremium(premium);
     };
 
-    const fetchMessageCount = async (userId) => {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        const { count, error } = await supabase
-            .from('chat_messages')
-            .select('*', { count: 'exact', head: true })
-            .eq('user_id', userId)
-            .eq('role', 'user')
-            .gte('created_at', today.toISOString());
-
-        if (!error) {
-            setMessageCountToday(count || 0);
+    const fetchCredits = async (userId) => {
+        try {
+            const res = await fetch('/api/credits', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId }),
+            });
+            const data = await res.json();
+            if (data.isPremium) return; // premium não precisa de créditos
+            setFreeCredits(data.credits ?? WEEKLY_LIMIT);
+            setNextResetAt(data.nextResetAt ?? null);
+        } catch (err) {
+            console.error('Erro ao buscar créditos:', err);
         }
     };
 
@@ -180,7 +181,7 @@ const Chat = () => {
                 fetchConversations(session.user.id);
                 fetchBookmarks(session.user.id);
                 checkPremiumStatus(session.user);
-                fetchMessageCount(session.user.id);
+                fetchCredits(session.user.id);
             } else {
                 setMessages([]);
                 setConversations([]);
@@ -210,8 +211,8 @@ const Chat = () => {
         const messageText = text || inputValue;
         if (!messageText.trim() || isLoading) return;
 
-        // Verificar limite para usuários não premium
-        if (!isPremium && messageCountToday >= DAILY_LIMIT) {
+        // Verificar créditos semanais para usuários não premium
+        if (!isPremium && freeCredits !== null && freeCredits <= 0) {
             setIsLimitModalOpen(true);
             return;
         }
@@ -268,9 +269,9 @@ const Chat = () => {
                     // Persistir resposta do assistente
                     saveMessage('assistant', accumulated, user?.id, currentConvId);
                     
-                    // Incrementar contador local
+                    // Decrementar créditos localmente
                     if (!isPremium) {
-                        setMessageCountToday(prev => prev + 1);
+                        setFreeCredits(prev => Math.max(0, (prev ?? WEEKLY_LIMIT) - 1));
                     }
 
                     // Atualizar o timestamp da conversa
@@ -494,10 +495,17 @@ const Chat = () => {
                     </main>
 
                     <footer className="chat-panel-footer">
-                        {!isPremium && user && (
+                        {!isPremium && user && freeCredits !== null && (
                             <div className="usage-indicator animate-fade-in">
                                 <div className="usage-progress-text">
-                                    <span>{Math.max(0, DAILY_LIMIT - messageCountToday)} de {DAILY_LIMIT} mensagens gratuitas restantes</span>
+                                    <span>
+                                        {freeCredits} de {WEEKLY_LIMIT} créditos semanais restantes
+                                        {nextResetAt && (
+                                            <span className="reset-hint">
+                                                {' '}· renova em {Math.ceil((new Date(nextResetAt) - new Date()) / (1000 * 60 * 60 * 24))} dias
+                                            </span>
+                                        )}
+                                    </span>
                                     <Link to="/planos" className="upgrade-link">
                                         <Crown size={14} />
                                         Seja Premium
@@ -506,7 +514,7 @@ const Chat = () => {
                                 <div className="usage-bar">
                                     <div 
                                         className="usage-bar-fill" 
-                                        style={{ width: `${Math.min(100, (messageCountToday / DAILY_LIMIT) * 100)}%` }}
+                                        style={{ width: `${Math.min(100, ((WEEKLY_LIMIT - freeCredits) / WEEKLY_LIMIT) * 100)}%` }}
                                     ></div>
                                 </div>
                             </div>

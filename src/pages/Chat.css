@@ -624,6 +624,11 @@
     text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
 }
 
+.reset-hint {
+    opacity: 0.55;
+    font-size: 0.7em;
+}
+
 .usage-bar {
     height: 4px;
     background: rgba(255, 255, 255, 0.05);
