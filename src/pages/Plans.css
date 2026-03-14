@@ -186,6 +186,168 @@
     background-color: #f0fdfa !important;
 }
 
+.btn-pix {
+    background: #00d2ff !important;
+    color: #000 !important;
+    font-weight: 700 !important;
+    margin-top: 12px;
+}
+
+.btn-pix:hover {
+    background: #33e0ff !important;
+    transform: translateY(-2px);
+}
+
+/* PIX Modal Styles */
+.pix-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.pix-modal-content {
+    background: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 480px;
+    width: 100%;
+    position: relative;
+    text-align: center;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.close-modal {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 28px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: white;
+}
+
+.pix-modal-header h2 {
+    font-size: 24px;
+    margin: 15px 0 5px;
+    color: white;
+}
+
+.pix-modal-header p {
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 25px;
+}
+
+.pix-icon {
+    color: #00d2ff;
+}
+
+.qr-code-container {
+    background: white;
+    padding: 15px;
+    border-radius: 16px;
+    display: inline-block;
+    margin-bottom: 25px;
+}
+
+.qr-code-img {
+    width: 220px;
+    height: 220px;
+}
+
+.pix-copy-section {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.copy-label {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 8px;
+}
+
+.copy-box {
+    display: flex;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 5px;
+}
+
+.copy-input {
+    background: none;
+    border: none;
+    color: white;
+    padding: 10px;
+    flex: 1;
+    font-size: 14px;
+    width: 100%;
+}
+
+.btn-copy {
+    background: #00d2ff;
+    color: black;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-copy:hover {
+    background: #33e0ff;
+}
+
+.pix-instructions {
+    text-align: left;
+    background: rgba(0, 210, 255, 0.05);
+    border-left: 3px solid #00d2ff;
+    padding: 15px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 25px;
+}
+
+.pix-instructions ol {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.pix-instructions li {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 8px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
 /* Trust Section */
 .plans-trust {
     display: flex;
