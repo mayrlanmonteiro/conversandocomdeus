@@ -2,14 +2,21 @@
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { supabaseAdmin } from './_supabaseAdmin.js';
 
-const client = new MercadoPagoConfig({ 
-  accessToken: process.env.MP_ACCESS_TOKEN 
-});
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  const accessToken = process.env.MP_ACCESS_TOKEN;
+
+  if (!accessToken) {
+    return res.status(500).json({ 
+      error: 'Configuração Incompleta', 
+      message: 'A variável de ambiente MP_ACCESS_TOKEN não foi configurada na Vercel.' 
+    });
+  }
+
+  const client = new MercadoPagoConfig({ accessToken });
 
   try {
     const { planType, userId } = req.body;

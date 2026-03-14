@@ -2,11 +2,15 @@
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { supabaseAdmin } from './_supabaseAdmin.js';
 
-const client = new MercadoPagoConfig({ 
-  accessToken: process.env.MP_ACCESS_TOKEN 
-});
-
 export default async function handler(req, res) {
+  const accessToken = process.env.MP_ACCESS_TOKEN;
+  
+  if (!accessToken) {
+    console.error('Webhook MP: MP_ACCESS_TOKEN não configurado.');
+    return res.status(500).send('Configuração Incompleta');
+  }
+
+  const client = new MercadoPagoConfig({ accessToken });
   // O Mercado Pago envia o ID da notificação via query params
   // Adicionamos um secret para segurança extra contra chamadas falsas
   try {
