@@ -104,7 +104,7 @@ export default function Plans() {
         {
             id: 'monthly',
             name: 'Plano Mensal',
-            price: 'R$ 29,90',
+            price: 'R$ 19,90',
             period: '/ mês',
             description: 'Ideal para quem quer começar sua jornada espiritual acompanhada.',
             icon: <Zap className="plan-icon-inner" />,
@@ -120,7 +120,7 @@ export default function Plans() {
         {
             id: 'yearly',
             name: 'Plano Anual',
-            price: 'R$ 299,00',
+            price: 'R$ 199,00',
             period: '/ ano',
             description: 'O melhor valor para um compromisso profundo com sua fé.',
             icon: <Crown className="plan-icon-inner" />,
