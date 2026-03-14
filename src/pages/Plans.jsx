@@ -81,7 +81,7 @@ export default function Plans() {
 
             if (!res.ok) {
                 console.error('Erro PIX:', data);
-                alert(`Não foi possível iniciar o pagamento PIX via Mercado Pago:\n${data.message || 'Erro desconhecido'}`);
+                alert(`Não foi possível iniciar o pagamento PIX via Mercado Pago:\n${data.message || data.error || 'Erro desconhecido'}\n\nDetalhes: ${data.details || 'Verifique o console do navegador para mais informações.'}`);
                 return;
             }
 
