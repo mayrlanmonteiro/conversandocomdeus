@@ -36,13 +36,19 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: 'Usuário não encontrado.' });
     }
 
-    const amount = planType === 'monthly'
-        ? Number(process.env.PIX_MONTHLY_AMOUNT ?? 29.90)
-        : Number(process.env.PIX_YEARLY_AMOUNT ?? 299.00);
+    const rawMonthly = process.env.PIX_MONTHLY_AMOUNT;
+    const rawYearly = process.env.PIX_YEARLY_AMOUNT;
 
-    if (!amount || amount <= 0) {
-      return res.status(500).json({ error: 'Valor PIX não configurado.' });
+    let amount = planType === 'monthly'
+        ? (rawMonthly ? parseFloat(rawMonthly) : 19.90)
+        : (rawYearly ? parseFloat(rawYearly) : 199.00);
+
+    // Se a conversão falhar (NaN), usa o hardcoded
+    if (isNaN(amount) || amount <= 0) {
+        amount = planType === 'monthly' ? 19.90 : 199.00;
     }
+
+    console.log(`Iniciando PIX para ${planType}: R$ ${amount}`);
 
     const description = planType === 'monthly'
         ? 'Plano mensal Conversando com Deus (PIX)'
