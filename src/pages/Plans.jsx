@@ -139,11 +139,16 @@ export default function Plans() {
         <div className="plans-page">
             <Header />
             
+            {/* Background Decorations */}
+            <div className="bg-blob blob-1"></div>
+            <div className="bg-blob blob-2"></div>
+            <div className="bg-blob blob-3"></div>
+
             <main className="plans-container container">
                 <header className="plans-header text-center">
                     <span className="badge-premium">ESCOLHA SUA JORNADA</span>
                     <h1>Transforme sua vida espiritual</h1>
-                    <p className="subtitle">Acesso completo a todas as ferramentas de estudo e aconselhamento bíblico.</p>
+                    <p className="subtitle">Conecte-se com a sabedoria divina através de uma experiência tecnológica premium e acolhedora.</p>
                 </header>
 
                 <div className="plans-grid">
