@@ -29,7 +29,7 @@ const Chat = () => {
     const [freeCredits, setFreeCredits] = useState(null);
     const [nextResetAt, setNextResetAt] = useState(null);
 
-    const WEEKLY_LIMIT = 20; // Créditos que renovam a cada 7 dias
+    const WEEKLY_LIMIT = 7; // Créditos que renovam a cada 7 dias
 
     const messagesEndRef = useRef(null);
 

@@ -1,6 +1,6 @@
 import { supabaseAdmin } from './_supabaseAdmin.js';
 
-const WEEKLY_LIMIT = 20;
+const WEEKLY_LIMIT = 7;
 
 export default async function handler(req, res) {
   // ── PATCH: decrementa 1 crédito no banco (fire-and-forget safe) ──────────
